@@ -24,6 +24,6 @@ exports.delete = (req, res) => {
 }
 
 /* fetch cities along with state by ID */
-exports.stateCities = (req,res) => {
+exports.stateCities = (req, res) => {
   res.status(500).json({ message: 'Success' });
 }
