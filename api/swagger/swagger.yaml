@@ -16,10 +16,6 @@ info:
     name: MIT
     url: 'http://opensource.org/licenses/MIT'
 
-# global security
-security:
-  - cookieAuth: []
-
 # Tags name Define here
 tags:
 - name: "advertises"
@@ -513,6 +509,17 @@ paths:
         '404':
           description: Not Found!
 
+  /users/logout:
+    get:
+      tags:
+      - "users"
+      description: end user session and logouts from system
+      responses:
+        '200':
+          description: successfully logged out!
+        '404':
+          description: Not Found!
+
   /users/edit/{id}:
     put:
       tags:
@@ -537,15 +544,7 @@ paths:
           description: Not Found!
 
 components:
-
-  securitySchemes:
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: connect.sid
-
   schemas:
-
     state:
       required:
         - name
