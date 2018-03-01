@@ -479,6 +479,24 @@ paths:
         '404':
           description: Not Found!
 
+  /users/ads/{id}:
+    get:
+      tags:
+      - "users"
+      description: fetch advertises created by user
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: id of user
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successfully fetched!
+        '404':
+          description: Not Found!
+
   /users/edit/{id}:
     put:
       tags:
