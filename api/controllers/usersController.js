@@ -12,3 +12,18 @@ exports.viewProfile = (req, res) => {
 exports.editProfile = (req, res) => {
   res.status(500).json({ message: 'Success' });
 }
+
+/* fetch user advertise */
+exports.userAdvertise = (req, res) => {
+
+}
+
+/* login into user profile */
+exports.login = (req, res) => {
+
+}
+
+/* logout from user profile */
+exports.logout = (req, res) => {
+
+}
