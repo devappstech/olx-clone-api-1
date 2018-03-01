@@ -461,6 +461,22 @@ paths:
         '404':
           description: Not Found
 
+  /users/login:
+    post:
+      tags:
+      - "users"
+      description: login exisiting local user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userLogin'
+      responses:
+        '201':
+          description: user logged in!
+        '404':
+          description: Not Found
+
   /users/profile/{id}:
     get:
       tags:
