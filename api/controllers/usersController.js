@@ -15,15 +15,15 @@ exports.editProfile = (req, res) => {
 
 /* fetch user advertise */
 exports.userAdvertise = (req, res) => {
-
+  res.status(500).json({ message: 'Success' });
 }
 
 /* login into user profile */
 exports.login = (req, res) => {
-
+  res.status(500).json({ message: 'Success' });
 }
 
 /* logout from user profile */
 exports.logout = (req, res) => {
-
+  res.status(500).json({ message: 'Success' });
 }

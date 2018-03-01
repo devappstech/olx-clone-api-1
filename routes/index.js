@@ -43,5 +43,8 @@ router.get('/states/:id/cities', statesController.stateCities)
 router.get('/users/profile/:id', usersController.viewProfile);
 router.post('/users/register', usersController.create);
 router.put('/users/edit/:id', usersController.editProfile);
+router.post('/users/login', usersController.login);
+router.get('/users/logout', usersController.logout);
+router.get('/users/ads/:id', usersController.userAdvertise);
 
 module.exports = router;
