@@ -1,3 +1,4 @@
+const dotenv = require('dotenv').config();
 const express = require('express');
 const path = require('path');
 //const favicon = require('serve-favicon');
@@ -7,6 +8,12 @@ const bodyParser = require('body-parser');
 const index = require('./routes/index');
 const users = require('./routes/users');
 const app = express();
+const passport = require('passport');
+
+// find ENV and if not found then throw error!
+if (dotenv.error) {
+  throw dotenv.error;
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -19,6 +26,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(require('express-session')(
+  {
+    secret: 'someVerySecertK3yThatNoBodyKnow$Actually',
+    resave: true,
+    saveUninitialized: true,
+    cookie:
+      { maxAge: 60000000 }
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use((err, req, res, next) => {
   //some security mechanism headers to avoid errors in browser

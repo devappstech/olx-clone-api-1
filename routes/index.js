@@ -1,12 +1,16 @@
 const express = require('express');
 // eslint-disable-next-line
 const router = express.Router();
-
+const passport = require('passport');
 // Controllers
 const advertiseController = require('../api/controllers/advertiseController');
 const categoriesController = require('../api/controllers/categoriesController');
 const statesController = require('../api/controllers/statesController');
 const usersController = require('../api/controllers/usersController');
+const isAuthTrue = require('../api/middlewares/successAuth');
+
+// eslint-disable-next-line
+const passportSetup = require('../api/middlewares/passportSetup');
 
 /* GET home page. */
 router.get('/', (req, res) => {
@@ -40,11 +44,14 @@ router.delete('/states/:stateId', statesController.delete);
 router.get('/states/:id/cities', statesController.stateCities)
 
 /* Users Controller Functions */
+router.get('/users/profile', usersController.viewProfile);
 router.get('/users/profile/:id', usersController.viewProfile);
 router.post('/users/register', usersController.create);
-router.put('/users/edit/:id', usersController.editProfile);
-router.post('/users/login', usersController.login);
+router.put('/users/edit', isAuthTrue.isAuth, usersController.editProfile);
+router.post('/users/login', passport.authenticate('local'), usersController.login);
 router.get('/users/logout', usersController.logout);
+router.get('/users/ads', usersController.userAdvertise);
 router.get('/users/ads/:id', usersController.userAdvertise);
+router.put('/users/password/reset', isAuthTrue.isAuth, usersController.resetPassword);
 
 module.exports = router;
