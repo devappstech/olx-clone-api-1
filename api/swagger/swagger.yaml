@@ -441,6 +441,42 @@ paths:
 
 # Users Path ---------------------------------------
 
+  /users/status/email:
+    post:
+      tags:
+      - "users"
+      description: check for email availbility
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestEmailStatus'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/EmailStatus'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/EmailStatus'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
   /users/register:
     post:
       tags:
@@ -453,9 +489,29 @@ paths:
               $ref: '#/components/schemas/userRegistration'
       responses:
         '201':
-          description: user registered!
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201response'
         '404':
           description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
 
   /users/login:
     post:
@@ -468,10 +524,30 @@ paths:
             schema:
               $ref: '#/components/schemas/userLogin'
       responses:
-        '201':
-          description: user logged in!
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201response'
         '404':
           description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
 
   /users/profile/{id}:
     get:
@@ -487,9 +563,60 @@ paths:
           type: integer
       responses:
         '200':
-          description: successfully fetched!
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201response'
         '404':
-          description: Not Found!
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /users/profile:
+    get:
+      tags:
+      - "users"
+      description: fetch user information
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
 
   /users/ads/{id}:
     get:
@@ -505,9 +632,61 @@ paths:
           type: integer
       responses:
         '200':
-          description: successfully fetched!
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201response'
         '404':
-          description: Not Found!
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /users/ads:
+    get:
+      tags:
+      - "users"
+      description: fetch advertises created by user
+      responses:
+        '200':
+          description: OK
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
 
   /users/logout:
     get:
@@ -516,11 +695,13 @@ paths:
       description: end user session and logouts from system
       responses:
         '200':
-          description: successfully logged out!
-        '404':
-          description: Not Found!
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201response'
 
-  /users/edit/{id}:
+  /users/edit:
     put:
       tags:
       - "users"
@@ -536,12 +717,68 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/userRegistration'
+              $ref: '#/components/schemas/userProfile'
+      responses:
+        '201':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /users/password/update:
+    put:
+      tags:
+      - "users"
+      description: modify local user's password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePassword'
       responses:
         '200':
-          description: successfully fetched!
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201response'
         '404':
-          description: Not Found!
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
 
 components:
   schemas:
@@ -580,6 +817,19 @@ components:
           type: number
         password:
           type: string
+
+    userProfile:
+      required:
+        - username
+        - email
+        - phoneNumber
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: number
 
     userLogin:
       required:
@@ -621,3 +871,74 @@ components:
           type: number
         cityId:
           type: integer
+
+    201response:
+      required:
+        - message
+        - data
+      properties:
+        message:
+          type: string
+        data:
+          type: array
+
+    201LoginResponse:
+      required:
+        - message
+        - Auth
+        - data
+      properties:
+        message:
+          type: string
+        Auth:
+          type: boolean
+        data:
+          type: array
+
+    404response:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+    UpdatePassword:
+      required:
+        - password
+      properties:
+        password:
+          type: string
+
+    400response:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+    500response:
+      required:
+        - message
+        - Stack
+      properties:
+        message:
+          type: string
+        Stack:
+          type: array
+
+    EmailStatus:
+      required:
+        - message
+        - status
+      properties:
+        message:
+          type: string
+        status:
+          type: string
+
+    RequestEmailStatus:
+      required:
+        - email
+      properties:
+        email:
+          type: string

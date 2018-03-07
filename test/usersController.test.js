@@ -1,12 +1,7 @@
 const request = require('supertest');
 const app = require('../app');
 
-const user = {
-  username: 'test',
-  email: 'AlphaTest2@test.com',
-  password: '123456789',
-  phone: '7897897890'
-}
+let cookies;
 
 /*
 ----------------------------------------------------
@@ -18,10 +13,10 @@ describe('POST /api/users/register', () => {
     request(app)
     .post('/api/users/register')
     .send({
-      username: user.username,
-      email: user.email,
-      password: user.password,
-      phone: user.phone
+      username: 'test',
+      email: 'testxxxxxxx@test.com',
+      password: '123456789',
+      phone: '7897897890'
     })
     .expect(201)
     .end((err, res) => {
@@ -42,49 +37,18 @@ describe('POST /api/users/login', () => {
     request(app)
     .post('/api/users/login')
     .send({
-      email: user.email,
-      password: user.password
+      email: '7777777@test.com',
+      password: 'test@password',
     })
     .expect(200)
     .end((err, res) => {
       if (err) return done(err)
+      cookies = res.headers['set-cookie'].pop().split(';')[0];
       expect(res.body.message).toBe('Success')
       done()
     })
   })
 })
-
-/*
-----------------------------------------------------
-  Users Controller: GET /api/users/profile
-----------------------------------------------------
-*/
-describe('GET /api/users/profile', () => {
-
-  it('send profile data of logged in user', (done) => {
-    request(app)
-    .post('/api/users/login')
-    .send({
-      email: user.email,
-      password: user.password
-    })
-    .expect(200)
-    .end((err) => {
-      if (err) return done(err)
-      request(app)
-      .get('/api/users/profile')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err)
-        expect(res.body.message).toBe('Success')
-        done()
-      })
-      done()
-    })
-  })
-
-});
 
 /*
 ----------------------------------------------------
@@ -92,9 +56,29 @@ describe('GET /api/users/profile', () => {
 ----------------------------------------------------
 */
 describe('GET /api/users/profile/:id', () => {
-  it('should fetch profile of a particular user', (done) => {
+  it('should fetch user details by id as json', (done) => {
     request(app)
-    .get('/api/users/profile/2')
+    .get('/api/users/profile/1')
+    .expect('Content-Type', /json/)
+    .expect(200)
+    .end((err, res) => {
+      if (err) return done(err)
+      expect(res.body.message).toBe('Success')
+      done()
+    })
+  });
+});
+
+/*
+----------------------------------------------------
+  Users Controller: GET /api/users/profile
+----------------------------------------------------
+*/
+describe('GET /api/users/profile', () => {
+  it('should fetch profile of a logged in user', (done) => {
+    const req = request(app).get('/api/users/profile')
+    req.cookies = cookies;
+    req
     .expect(200)
     .end((err, res) => {
       if (err) return done(err)
@@ -104,42 +88,30 @@ describe('GET /api/users/profile/:id', () => {
   })
 })
 
+
 /*
 ----------------------------------------------------
   Users Controller: PUT /api/users/edit
 ----------------------------------------------------
 */
 describe('PUT /api/users/edit', () => {
-
-  it('edit profile data of logged in user', (done) => {
-    request(app)
-    .post('/api/users/login')
+  it('should modify a user', (done) => {
+    const req = request(app).put('/api/users/edit')
+    req.cookies = cookies;
+    req
     .send({
-      email: user.email,
-      password: user.password
+      username: 'rajan-bye',
+      email: '7777777@test.com',
+      phone: '9898012345'
     })
     .expect(200)
-    .end((err) => {
+    .end((err, res) => {
       if (err) return done(err)
-      request(app)
-      .put('/api/users/edit')
-      .send({
-        email: user.email,
-        phone: user.phone,
-        username: user.username
-      })
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err)
-        expect(res.body.message).toBe('Success')
-        done()
-      })
+      expect(res.body.message).toBe('Success')
       done()
     })
   })
-
-});
+})
 
 /*
 ----------------------------------------------------
@@ -161,38 +133,44 @@ describe('GET /api/users/ads/:id', () => {
 
 /*
 ----------------------------------------------------
+  Users Controller: GET /api/users/ads
+----------------------------------------------------
+*/
+describe('GET /api/users/ads', () => {
+  it('should fetch advertises of a logged in user', (done) => {
+    const req = request(app).get('/api/users/ads')
+    req.cookies = cookies;
+    req
+    .expect(200)
+    .end((err, res) => {
+      if (err) return done(err)
+      expect(res.body.message).toBe('Success')
+      done()
+    })
+  })
+})
+
+/*
+----------------------------------------------------
   Users Controller: PUT /api/users/password/update
 ----------------------------------------------------
 */
 describe('PUT /api/users/password/update', () => {
-
-  it('edit password of logged in user', (done) => {
-    request(app)
-    .post('/api/users/login')
+  it('should modify a local user password', (done) => {
+    const req = request(app).put('/api/users/password/update')
+    req.cookies = cookies;
+    req
     .send({
-      email: user.email,
-      password: user.password
+      password: 'test@password'
     })
     .expect(200)
-    .end((err) => {
+    .end((err, res) => {
       if (err) return done(err)
-      request(app)
-      .put('/api/users/password/update')
-      .send({
-        password: user.password
-      })
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err)
-        expect(res.body.message).toBe('Success')
-        done()
-      })
+      expect(res.body.message).toBe('Success')
       done()
     })
   })
-
-});
+})
 
 /*
 ----------------------------------------------------
@@ -210,4 +188,40 @@ describe('GET /api/users/logout', () => {
       done()
     })
   })
+})
+
+/*
+----------------------------------------------------
+  Users Controller: POST /api/users/status/email
+----------------------------------------------------
+*/
+describe('POST /api/users/status/email', () => {
+  it('should check if email is available for a new user', (done) => {
+    request(app)
+    .post('/api/users/status/email')
+    .send({
+      email: 'completlyNewEmail@test.com'
+    })
+    .expect(200)
+    .end((err, res) => {
+      if (err) return done(err)
+      expect(res.body.status).toBe('Available')
+      done()
+    })
+  })
+
+  it('should check if email is Not available for a new user', (done) => {
+    request(app)
+    .post('/api/users/status/email')
+    .send({
+      email: '7777777@test.com'
+    })
+    .expect(400)
+    .end((err, res) => {
+      if (err) return done(err)
+      expect(res.body.status).toBe('Not Available')
+      done()
+    })
+  })
+
 })
