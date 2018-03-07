@@ -14,7 +14,9 @@ passport.use(new LocalStrategy({
         const first = user[0];
         bcrypt.compare(password, first.auth_password, function(err, res) {
           if (res) {
-            return done(null, user[0].user_id);
+            return done(null, {
+              user_id: user[0].user_id
+            });
           } else {
             return done(null, false);
           }
@@ -34,9 +36,9 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((user, done) => {
-  return usersModel.findById(user.user_id, user.auth_type)
+  return usersModel.findById(user.user_id)
     .then((user) => {
-      done(null, user);
+      done(null, user[0].user_id);
     })
     .catch((err) => {
       if (err) {

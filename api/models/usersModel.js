@@ -70,7 +70,7 @@ exports.findLocalUser = (email) => {
   on passportjs
 ---------------------------------------------------------
 */
-exports.findById = (userId, authType) => {
+exports.findById = (userId) => {
 
   const findById = database.queryBuilder
     .select()
@@ -81,7 +81,6 @@ exports.findById = (userId, authType) => {
     .field('user_phone')
     .field('auth_type')
     .join('auth', null, 'auth_user_id = user_id')
-    .where('auth_type = ?', authType)
     .where('user_id = ?', userId)
     .toParam();
 
@@ -174,4 +173,21 @@ exports.resetPassword = (id, password) => {
     .toParam();
 
   return database.executeQuery(resetPassword);
+}
+
+/*
+---------------------------------------------------------
+  Users Models: isEmailAvailable - Check new users email
+  Available or not
+---------------------------------------------------------
+*/
+exports.isEmailAvailable = (email) => {
+
+  const EmailAvailable = database.queryBuilder
+    .select()
+    .from('users')
+    .where('user_email = ?', email)
+    .toParam();
+
+  return database.executeQuery(EmailAvailable);
 }

@@ -1,24 +1,12 @@
 const request = require('supertest');
 const app = require('../app');
 
-/*
-----------------------------------------------------
-  Users Controller: GET /api/users/profile/:id
-----------------------------------------------------
-*/
-describe('GET /api/users/profile/:id', () => {
-  it('should fetch user details by id as json', (done) => {
-    request(app)
-    .get('/api/users/profile/1')
-    .expect('Content-Type', /json/)
-    .expect(200)
-    .end((err, res) => {
-      if (err) return done(err)
-      expect(res.body.message).toBe('Success')
-      done()
-    })
-  });
-});
+const user = {
+  username: 'test',
+  email: 'AlphaTest2@test.com',
+  password: '123456789',
+  phone: '7897897890'
+}
 
 /*
 ----------------------------------------------------
@@ -30,10 +18,10 @@ describe('POST /api/users/register', () => {
     request(app)
     .post('/api/users/register')
     .send({
-      username: 'test',
-      email: 'testxxxxxxx@test.com',
-      password: '123456789',
-      phone: '7897897890'
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      phone: user.phone
     })
     .expect(201)
     .end((err, res) => {
@@ -54,9 +42,59 @@ describe('POST /api/users/login', () => {
     request(app)
     .post('/api/users/login')
     .send({
-      email: 'test@test.com',
-      password: '123456789',
+      email: user.email,
+      password: user.password
     })
+    .expect(200)
+    .end((err, res) => {
+      if (err) return done(err)
+      expect(res.body.message).toBe('Success')
+      done()
+    })
+  })
+})
+
+/*
+----------------------------------------------------
+  Users Controller: GET /api/users/profile
+----------------------------------------------------
+*/
+describe('GET /api/users/profile', () => {
+
+  it('send profile data of logged in user', (done) => {
+    request(app)
+    .post('/api/users/login')
+    .send({
+      email: user.email,
+      password: user.password
+    })
+    .expect(200)
+    .end((err) => {
+      if (err) return done(err)
+      request(app)
+      .get('/api/users/profile')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err)
+        expect(res.body.message).toBe('Success')
+        done()
+      })
+      done()
+    })
+  })
+
+});
+
+/*
+----------------------------------------------------
+  Users Controller: GET /api/users/profile/:id
+----------------------------------------------------
+*/
+describe('GET /api/users/profile/:id', () => {
+  it('should fetch profile of a particular user', (done) => {
+    request(app)
+    .get('/api/users/profile/2')
     .expect(200)
     .end((err, res) => {
       if (err) return done(err)
@@ -72,40 +110,36 @@ describe('POST /api/users/login', () => {
 ----------------------------------------------------
 */
 describe('PUT /api/users/edit', () => {
-  it('should modify a user', (done) => {
-    request(app)
-    .put('/api/users/edit')
-    .send({
-      username: 'rajan-bye',
-      email: 'test1777@test.com',
-      phone: '9898012345'
-    })
-    .expect(200)
-    .end((err, res) => {
-      if (err) return done(err)
-      expect(res.body.message).toBe('Success')
-      done()
-    })
-  })
-})
 
-/*
-----------------------------------------------------
-  Users Controller: GET /api/users/logout
-----------------------------------------------------
-*/
-describe('GET /api/users/logout', () => {
-  it('should logout a user', (done) => {
+  it('edit profile data of logged in user', (done) => {
     request(app)
-    .get('/api/users/logout')
+    .post('/api/users/login')
+    .send({
+      email: user.email,
+      password: user.password
+    })
     .expect(200)
-    .end((err, res) => {
+    .end((err) => {
       if (err) return done(err)
-      expect(res.body.message).toBe('Success')
+      request(app)
+      .put('/api/users/edit')
+      .send({
+        email: user.email,
+        phone: user.phone,
+        username: user.username
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err)
+        expect(res.body.message).toBe('Success')
+        done()
+      })
       done()
     })
   })
-})
+
+});
 
 /*
 ----------------------------------------------------
@@ -127,16 +161,48 @@ describe('GET /api/users/ads/:id', () => {
 
 /*
 ----------------------------------------------------
-  Users Controller: PUT /api/users/password/reset
+  Users Controller: PUT /api/users/password/update
 ----------------------------------------------------
 */
-describe('PUT /api/users/password/reset', () => {
-  it('should modify a local user password', (done) => {
+describe('PUT /api/users/password/update', () => {
+
+  it('edit password of logged in user', (done) => {
     request(app)
-    .put('/api/users/password/reset')
+    .post('/api/users/login')
     .send({
-      password: 'test@password'
+      email: user.email,
+      password: user.password
     })
+    .expect(200)
+    .end((err) => {
+      if (err) return done(err)
+      request(app)
+      .put('/api/users/password/update')
+      .send({
+        password: user.password
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err)
+        expect(res.body.message).toBe('Success')
+        done()
+      })
+      done()
+    })
+  })
+
+});
+
+/*
+----------------------------------------------------
+  Users Controller: GET /api/users/logout
+----------------------------------------------------
+*/
+describe('GET /api/users/logout', () => {
+  it('should logout a user', (done) => {
+    request(app)
+    .get('/api/users/logout')
     .expect(200)
     .end((err, res) => {
       if (err) return done(err)

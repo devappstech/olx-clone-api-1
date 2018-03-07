@@ -17,7 +17,7 @@ const validateNewUser = Joi.object().keys({
   .required(),
   userPhone: Joi.number().integer().min(10)
   .required(),
-  userPassword: Joi.string()
+  userPassword: Joi.string().min(8).max(18)
   .required()
 })
 
@@ -39,7 +39,13 @@ const validateUsersId = Joi.object().keys({
 
 // schema for user's ID
 const validateUsersPassword = Joi.object().keys({
-  userPassword: Joi.string()
+  userPassword: Joi.string().min(8).max(18)
+  .required()
+})
+
+// schema for user's Email Available or not?
+const validateUsersEmail = Joi.object().keys({
+  userEmail: Joi.string().email()
   .required()
 })
 
@@ -89,7 +95,7 @@ exports.viewProfile = (req, res) => {
 
   let id;
   if (!req.params.id){
-    id = parseInt(req.session.passport.user, 0);
+    id = parseInt(req.session.passport.user.user_id, 0);
   } else {
     id = parseInt(req.params.id, 0);
   }
@@ -120,7 +126,7 @@ exports.viewProfile = (req, res) => {
 */
 exports.editProfile = (req, res) => {
 
-  let id = parseInt(req.session.passport.user, 0);
+  let id = parseInt(req.session.passport.user.user_id, 0);
 
   const userName = req.body.username;
   const email = req.body.email;
@@ -131,7 +137,6 @@ exports.editProfile = (req, res) => {
   // eslint-disable-next-line
   const resultId = Joi.validate({ userId: id }, validateUsersId);
 
-  console.log(result, resultId)
   if (result.error === null && resultId.error === null){
     usersModel.editUser(id, userName, email, phone)
     .then((data) => {
@@ -157,7 +162,7 @@ exports.userAdvertise = (req, res) => {
 
   let id;
   if (!req.params.id){
-    id = parseInt(req.session.passport.user, 0);
+    id = parseInt(req.session.passport.user.user_id, 0);
   } else {
     id = parseInt(req.params.id, 0);
   }
@@ -188,7 +193,8 @@ exports.userAdvertise = (req, res) => {
 */
 exports.login = (req, res) => {
 
-  const id = req.user;
+  const id = req.user.user_id;
+
   // eslint-disable-next-line
   const result = Joi.validate({ userId: id }, validateUsersId);
 
@@ -224,7 +230,7 @@ exports.logout = (req, res) => {
 */
 exports.resetPassword = (req, res) => {
 
-  let id = parseInt(req.session.passport.user, 0);
+  let id = parseInt(req.session.passport.user.user_id, 0);
 
   const password = req.body.password;
 
@@ -233,7 +239,6 @@ exports.resetPassword = (req, res) => {
   // eslint-disable-next-line
   const resultId = Joi.validate({ userId: id }, validateUsersId);
 
-  console.log(result, resultId)
   if (result.error === null && resultId.error === null){
     bcrypt.hash(password, saltRounds).then(function(hash) {
       usersModel.resetPassword(id, hash)
@@ -246,6 +251,34 @@ exports.resetPassword = (req, res) => {
 
       })
       .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+    })
+    .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+  } else {
+    res.status(400).json({ message: 'Invalid Data!' });
+  }
+}
+
+/*
+------------------------------------------------------------------
+  User Controller Function to check User's email is available or not
+------------------------------------------------------------------
+*/
+exports.isEmailAvailable = (req, res) => {
+
+  const email = req.body.email;
+
+  // eslint-disable-next-line
+  const result = Joi.validate({ userEmail: email }, validateUsersEmail);
+
+  if (result.error === null){
+    usersModel.isEmailAvailable(email)
+    .then((data) => {
+      if (!data || data.length > 0) {
+        res.status(400).json({ message: 'Email Found!', status: "Not Available" });
+      } else {
+        res.status(200).json({ message: 'Success', status: "Available" });
+      }
+
     })
     .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
   } else {

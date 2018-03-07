@@ -15,7 +15,7 @@ describe('Insert new User', () => {
 
   const newUser = {
     username: 'test',
-    email: 'test@test.com',
+    email: 'testmeagain1@test.com',
     phone: 1234567890
   };
 
@@ -49,19 +49,19 @@ describe('Insert new local user auth', () => {
   };
 
   const newUserAuth = {
-    id: 2,
+    id: 115,
     password: 'secertAdmin'
   };
 
   it('should return undefined', () => {
-    return usersModel.createLocalUser(oldUserAuth.id, oldUserAuth.password)
+    return usersModel.createLocalUserAuth(oldUserAuth.id, oldUserAuth.password)
       .then(data => {
         expect(data).toBeUndefined();
       })
   });
 
   it('should return data array with length 1', () => {
-    return usersModel.createLocalUser(newUserAuth.id, newUserAuth.password)
+    return usersModel.createLocalUserAuth(newUserAuth.id, newUserAuth.password)
       .then(data => {
         expect(data).toHaveLength(1);
       })
@@ -103,16 +103,16 @@ describe('Find user and send user data', () => {
 describe('Find Local user and Return user and auth data', () => {
 
   it('should return undefined', () => {
-    return usersModel.findLocalUser('notRegisteredUser@user.com', '1234456')
+    return usersModel.findLocalUser('notRegisteredUser@user.com')
       .then(data => {
         expect(data[0]).toBeUndefined();
       })
   });
 
   it('should return data array with length 1', () => {
-    return usersModel.findLocalUser('test@test.com', '123456789')
+    return usersModel.findLocalUser('ac.mattis@ultriciesadipiscing.net')
       .then(data => {
-        expect(data[0].user_email).toBe('test@test.com');
+        expect(data[0].user_email).toBe('ac.mattis@ultriciesadipiscing.net');
       })
   });
 
@@ -184,4 +184,28 @@ describe('edit existing user local auth password.', () => {
         expect(data).toBeTruthy();
       })
   });
+});
+
+/*
+---------------------------------------------------------
+  Users Models: isEmailAvailable - check if new users
+  email is already in database ot not.
+---------------------------------------------------------
+*/
+describe('check if new users email is already in database ot not.', () => {
+
+  it('should return non empty array for existing email', () => {
+    return usersModel.isEmailAvailable('ac.mattis@ultriciesadipiscing.net')
+      .then(data => {
+        expect(data).toHaveLength(1);
+      })
+  });
+
+  it('should return empty array for new email', () => {
+    return usersModel.isEmailAvailable('model@newEmail.com')
+      .then(data => {
+        expect(data).toHaveLength(0);
+      })
+  });
+
 });

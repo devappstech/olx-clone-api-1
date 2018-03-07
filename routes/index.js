@@ -44,14 +44,15 @@ router.delete('/states/:stateId', statesController.delete);
 router.get('/states/:id/cities', statesController.stateCities)
 
 /* Users Controller Functions */
-router.get('/users/profile', usersController.viewProfile);
+router.get('/users/profile', isAuthTrue.isAuth, usersController.viewProfile);
 router.get('/users/profile/:id', usersController.viewProfile);
 router.post('/users/register', usersController.create);
 router.put('/users/edit', isAuthTrue.isAuth, usersController.editProfile);
 router.post('/users/login', passport.authenticate('local'), usersController.login);
 router.get('/users/logout', usersController.logout);
-router.get('/users/ads', usersController.userAdvertise);
+router.get('/users/ads', isAuthTrue.isAuth, usersController.userAdvertise);
 router.get('/users/ads/:id', usersController.userAdvertise);
-router.put('/users/password/reset', isAuthTrue.isAuth, usersController.resetPassword);
+router.put('/users/password/update', isAuthTrue.isAuth, usersController.resetPassword);
+router.post('/users/status/email', usersController.isEmailAvailable);
 
 module.exports = router;
