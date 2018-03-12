@@ -8,7 +8,11 @@ const validateId = Joi.object().keys({
   .required()
 })
 
-/* fetch all categories */
+/*
+---------------------------------------------------------
+ get All Available Categories.
+---------------------------------------------------------
+*/
 exports.readAll = (req, res) => {
 
   categoriesModel.readAllCategories().then((data) => {
@@ -21,7 +25,11 @@ exports.readAll = (req, res) => {
   .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e }));
 }
 
-/* fetch single categories */
+/*
+---------------------------------------------------------
+ get details for given id of category.
+---------------------------------------------------------
+*/
 exports.read = (req, res) => {
 
   const id = parseInt(req.params.id, 0);
