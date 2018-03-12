@@ -30,7 +30,7 @@ router.post('/ads/:id/upload', advertiseController.uploadAdvertisePhotos);
 
 /* Categories Controller Functions */
 router.get('/categories', categoriesController.readAll);
-router.get('/categories/:categoryId', categoriesController.read);
+router.get('/categories/:id', categoriesController.read);
 
 /* States Controller Functions */
 router.get('/states', statesController.readAll);
