@@ -225,3 +225,22 @@ describe('POST /api/users/status/email', () => {
   })
 
 })
+
+/*
+----------------------------------------------------
+  Users Controller: GET /api/users/status
+----------------------------------------------------
+*/
+describe('GET /api/users/status', () => {
+  it('should fetch details of a logged in user', (done) => {
+    const req = request(app).get('/api/users/status')
+    req.cookies = cookies;
+    req
+    .expect(200)
+    .end((err, res) => {
+      if (err) return done(err)
+      expect(res.body.message).toBe('Success')
+      done()
+    })
+  })
+})
