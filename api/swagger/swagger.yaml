@@ -493,7 +493,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201response'
+             $ref: '#/components/schemas/201-200response'
         '404':
           description: Not Found
           content:
@@ -529,7 +529,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201response'
+             $ref: '#/components/schemas/200LoginResponse'
         '404':
           description: Not Found
           content:
@@ -567,7 +567,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201response'
+             $ref: '#/components/schemas/201-200response'
         '404':
           description: Not Found
           content:
@@ -598,7 +598,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201response'
+             $ref: '#/components/schemas/201-200response'
         '404':
           description: Not Found
           content:
@@ -636,7 +636,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201response'
+             $ref: '#/components/schemas/201-200response'
         '404':
           description: Not Found
           content:
@@ -667,7 +667,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201response'
+             $ref: '#/components/schemas/201-200response'
         '404':
           description: Not Found
           content:
@@ -699,7 +699,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201response'
+             $ref: '#/components/schemas/200LogoutResponse'
 
   /users/edit:
     put:
@@ -724,7 +724,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201response'
+             $ref: '#/components/schemas/201-200response'
         '404':
           description: Not Found
           content:
@@ -760,7 +760,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201response'
+             $ref: '#/components/schemas/201-200response'
         '404':
           description: Not Found
           content:
@@ -872,7 +872,7 @@ components:
         cityId:
           type: integer
 
-    201response:
+    201-200response:
       required:
         - message
         - data
@@ -882,7 +882,7 @@ components:
         data:
           type: array
 
-    201LoginResponse:
+    200LoginResponse:
       required:
         - message
         - Auth
@@ -894,6 +894,13 @@ components:
           type: boolean
         data:
           type: array
+
+    200LogoutResponse:
+      required:
+        - message
+      properties:
+        message:
+          type: string
 
     404response:
       required:
