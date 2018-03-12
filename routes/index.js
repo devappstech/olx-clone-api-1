@@ -30,17 +30,11 @@ router.post('/ads/:id/upload', advertiseController.uploadAdvertisePhotos);
 
 /* Categories Controller Functions */
 router.get('/categories', categoriesController.readAll);
-router.post('/categories', categoriesController.create);
-router.get('/categories/:categoryId', categoriesController.read);
-router.put('/categories/:categoryId', categoriesController.update);
-router.delete('/categories/:categoryId', categoriesController.delete);
+router.get('/categories/:id', categoriesController.read);
 
 /* States Controller Functions */
 router.get('/states', statesController.readAll);
-router.post('/states', statesController.create);
-router.get('/states/:stateId', statesController.read);
-router.put('/states/:stateId', statesController.update);
-router.delete('/states/:stateId', statesController.delete);
+router.get('/states/:id', statesController.read);
 router.get('/states/:id/cities', statesController.stateCities)
 
 /* Users Controller Functions */

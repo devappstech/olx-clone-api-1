@@ -1,24 +1,52 @@
-/* fetch all categories */
+const categoriesModel = require('../models/categoriesModel');
+
+const Joi = require('joi');
+
+// schema for State's ID
+const validateId = Joi.object().keys({
+  categoryId: Joi.number().integer()
+  .required()
+})
+
+/*
+---------------------------------------------------------
+ get All Available Categories.
+---------------------------------------------------------
+*/
 exports.readAll = (req, res) => {
-  res.status(500).json({ message: 'Error' });
+
+  categoriesModel.readAllCategories().then((data) => {
+    if (!data || data.length <= 0){
+      res.status(404).json({ message: 'No Data Found' });
+    } else {
+      res.status(200).json({ message: 'Success', data: data });
+    }
+  })
+  .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e }));
 }
 
-/* fetch single categories */
+/*
+---------------------------------------------------------
+ get details for given id of category.
+---------------------------------------------------------
+*/
 exports.read = (req, res) => {
-  res.status(500).json({ message: 'Error' });
-}
 
-/* create a new categories */
-exports.create = (req, res) => {
-  res.status(500).json({ message: 'Error' });
-}
+  const id = parseInt(req.params.id, 0);
 
-/* update a existing categories */
-exports.update = (req, res) => {
-  res.status(500).json({ message: 'Error' });
-}
+  // eslint-disable-next-line
+  const result = Joi.validate({ categoryId: id }, validateId);
 
-/* delete a single categories */
-exports.delete = (req, res) => {
-  res.status(500).json({ message: 'Error' });
+  if (result.error === null){
+    categoriesModel.readCategory(id).then((data) => {
+      if (!data || data.length <= 0){
+        res.status(404).json({ message: 'No Data Found' });
+      } else {
+        res.status(200).json({ message: 'Success', data: data });
+      }
+    })
+    .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e }));
+  } else {
+    res.status(400).json({ message: 'Invalid Data!' });
+  }
 }
