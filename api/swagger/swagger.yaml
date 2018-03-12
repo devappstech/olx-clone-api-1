@@ -57,12 +57,6 @@ paths:
            application/json:
             schema:
              $ref: '#/components/schemas/500response'
-        '400':
-          description: Bad Request
-          content:
-           application/json:
-            schema:
-             $ref: '#/components/schemas/400response'
 
   /states/{id}:
     get:
@@ -148,24 +142,23 @@ paths:
       description: it fetches categories list from database and send it to user
       responses:
         '200':
-          description: OK
-        '404':
-          description: Not Found!
-
-    post:
-      tags:
-      - "categories"
-      summary: create new categories
-      description: used to create new categories
-      responses:
-        '200':
-          description: OK
-      requestBody:
-        content:
-          application/json:
+          description: OK!
+          content:
+           application/json:
             schema:
-              $ref: '#/components/schemas/categories'
-        description: The category to create.
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
 
   /categories/{categoryId}:
     get:
@@ -181,49 +174,29 @@ paths:
             type: integer
       responses:
         '200':
-          description: "gives category name"
-        '404':
-          description: 'Not Found'
-
-    put:
-      tags:
-      - "categories"
-      description: "Updates Category by id"
-      parameters:
-        - name: categoryId
-          in: path
-          description: Updates Category
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: "update category name"
-        '404':
-          description: 'Not Found!'
-      requestBody:
-        content:
-          application/json:
+          description: OK!
+          content:
+           application/json:
             schema:
-              $ref: '#/components/schemas/categories'
-        description: The category to update.
-
-    delete:
-      tags:
-      - "categories"
-      description: "Delete Category Name"
-      parameters:
-        - name: categoryId
-          in: path
-          description: delete category id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: "delete category from system"
+             $ref: '#/components/schemas/201-200response'
         '404':
-          description: 'Not Found!'
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
 
 # Advertises Path --------------------------------
   /ads:
