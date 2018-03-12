@@ -38,35 +38,39 @@ paths:
       - "states"
       summary: gets states data from database
       description: this is used to get all state data along.
-      operationId: readAll
       responses:
         '200':
-          description: Showing Recently added advertises
-
-    post:
-      tags:
-      - "states"
-      summary: Creates a state
-      description: Adds a new state to the state list.
-      responses:
-        '201':
-          description: State succesfully created.
-        '404':
-          description: State couldn't have been created.
-      requestBody:
-        content:
-          application/json:
+          description: OK!
+          content:
+           application/json:
             schema:
-              $ref: '#/components/schemas/state'
-        description: The state to create.
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
 
-  '/states/{stateId}':
+  /states/{id}:
     get:
       tags:
       - "states"
-      summary: Returns a state by ID.
+      summary: Returns a state details by ID.
       parameters:
-        - name: stateId
+        - name: id
           in: path
           description: ID of state need to fetch
           required: true
@@ -74,48 +78,29 @@ paths:
             type: integer
       responses:
         '200':
-          description: Showing Recently added advertises
-        '404':
-          description: Not Found
-
-    put:
-      tags:
-      - "states"
-      summary: update state name by id.
-      parameters:
-        - name: stateId
-          in: path
-          description: name of state need to patch/update
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Updated state advertises
-        '404':
-          description: Not Found
-      requestBody:
-        content:
-          application/json:
+          description: OK!
+          content:
+           application/json:
             schema:
-              $ref: '#/components/schemas/state'
-
-    delete:
-      tags:
-      - "states"
-      summary: it deletes state using state id.
-      description: remove state from database.
-      parameters:
-        - name: stateId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: OK
+             $ref: '#/components/schemas/201-200response'
         '404':
-          description: Not Found!
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
 
   /states/{id}/cities:
     get:
@@ -130,9 +115,29 @@ paths:
             type: integer
       responses:
         '200':
-          description: Successfully fetched!
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
         '404':
-          description: Not Found!
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
 
 # Categories Path -----------------------------------
   /categories:
