@@ -1,12 +1,21 @@
+const dotenv = require('dotenv').config();
 const express = require('express');
 const path = require('path');
-//const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const passport = require('passport');
+const session = require('express-session');
+//const favicon = require('serve-favicon');
 const index = require('./routes/index');
 const users = require('./routes/users');
+
 const app = express();
+
+// find ENV and if not found then throw error!
+if (dotenv.error) {
+  throw dotenv.error;
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -20,9 +29,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  secret: process.env.sessionSecert,
+  resave: true,
+  saveUninitialized: true,
+  cookie:
+  { maxAge: 60000000 }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use((err, req, res, next) => {
   //some security mechanism headers to avoid errors in browser
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", process.env.BASE_URL);
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
 
   if (req.method === 'OPTIONS') {

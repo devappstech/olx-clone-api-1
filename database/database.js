@@ -1,5 +1,11 @@
 const squel = require('squel').useFlavour('postgres');
+const dotenv = require('dotenv').config();
 const { Pool } = require('pg');
+
+// find ENV and if not found then throw error!
+if (dotenv.error) {
+  throw dotenv.error;
+}
 
 /*
 -----------------------------------------------
@@ -18,7 +24,7 @@ const pool = new Pool({
 
   user: process.env.PGUSER || 'postgres',
   host: process.env.PGHOST || 'localhost',
-  database: process.env.PGDATABASE || 'database99',
+  database: process.env.PGDATABASE || 'database',
   password: process.env.PGPASSWORD || '123456',
   port: process.env.PGPORT || 5432,
   idleTimeoutMillis: 500,
