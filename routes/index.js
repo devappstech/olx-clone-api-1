@@ -19,14 +19,12 @@ router.get('/', (req, res) => {
 
 /* Adverties Controller Functions */
 router.get('/ads', advertiseController.getRecentAdvertise);
-router.post('/ads', advertiseController.createAdvertise);
+// --> [Pending] <--- router.post('/ads', advertiseController.createAdvertise);
 router.get('/ads/:id', advertiseController.getSingleAdvertise);
 router.put('/ads/:id', advertiseController.modifySingleAdvertise);
 router.delete('/ads/:id', advertiseController.deleteSingleAdvertise);
-router.put('/ads/:id/sells', advertiseController.setAdvertiseStatus);
-router.get('/ads/search/:keyword', advertiseController.getSearchResult);
-router.get('/ads/categories/:categoryId', advertiseController.showAdInCategory);
-router.post('/ads/:id/upload', advertiseController.uploadAdvertisePhotos);
+router.get('/ads/:categorName/q-:keyword', advertiseController.getSearchResult);
+router.get('/ads/all-results/q-:keyword', advertiseController.showAdInCategory);
 
 /* Categories Controller Functions */
 router.get('/categories', categoriesController.readAll);
@@ -35,7 +33,7 @@ router.get('/categories/:id', categoriesController.read);
 /* States Controller Functions */
 router.get('/states', statesController.readAll);
 router.get('/states/:id', statesController.read);
-router.get('/states/:id/cities', statesController.stateCities)
+router.get('/states/:id/cities', statesController.stateCities);
 
 /* Users Controller Functions */
 router.get('/users/profile', isAuthTrue.isAuth, usersController.viewProfile);
