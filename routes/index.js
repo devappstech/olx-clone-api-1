@@ -2,6 +2,7 @@ const express = require('express');
 // eslint-disable-next-line
 const router = express.Router();
 const passport = require('passport');
+
 // Controllers
 const advertiseController = require('../api/controllers/advertiseController');
 const categoriesController = require('../api/controllers/categoriesController');
@@ -23,8 +24,8 @@ router.get('/ads', advertiseController.getRecentAdvertise);
 router.get('/ads/:id', advertiseController.getSingleAdvertise);
 router.put('/ads/:id', advertiseController.modifySingleAdvertise);
 router.delete('/ads/:id', advertiseController.deleteSingleAdvertise);
-router.get('/ads/:categorName/q-:keyword', advertiseController.getSearchResult);
-router.get('/ads/all-results/q-:keyword', advertiseController.showAdInCategory);
+router.get('/ads/results/:term', advertiseController.searchAll);
+router.get('/ads/:categorName/:term', advertiseController.searchInCategory);
 
 /* Categories Controller Functions */
 router.get('/categories', categoriesController.readAll);

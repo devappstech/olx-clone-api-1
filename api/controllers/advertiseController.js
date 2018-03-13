@@ -1,5 +1,4 @@
 const advertisesModel = require('../models/advertisesModel');
-
 const Joi = require('joi');
 
 // schema for Advertise's ID
@@ -9,9 +8,19 @@ const validateId = Joi.object().keys({
 })
 
 // For Pagination
-const itemperPage = 10;
+const itemPerPage = 10;
 
-/* Get Recent Advertises */
+const calculatePagination = (itemsPerPage, currentPage) =>{
+  return ({
+    from: ((currentPage - 1) * itemsPerPage) + 1,
+  })
+}
+
+/*
+---------------------------------------------------------
+  show recent advertise according to pagination
+---------------------------------------------------------
+*/
 exports.getRecentAdvertise = (req, res) => {
 
   let page;
@@ -21,10 +30,9 @@ exports.getRecentAdvertise = (req, res) => {
     page = 1;
   }
 
-  const from = advertisesModel.calculatePagination(itemperPage, page).from;
-  const to = advertisesModel.calculatePagination(itemperPage, page).to;
+  const from = calculatePagination(itemPerPage, page).from;
 
-  advertisesModel.recentAds(from, to).then((data) => {
+  advertisesModel.recentAds(from, itemPerPage).then((data) => {
     if (!data || data.length <= 0){
       res.status(404).json({ message: 'No Data Found' });
     } else {
@@ -34,12 +42,11 @@ exports.getRecentAdvertise = (req, res) => {
   .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e }));
 }
 
-/* Create new Advertises */
-// exports.createAdvertise = (req, res) => {
-//   res.status(500).json({ message: 'Error' });
-// }
-
-/* Get single Advertises by ID */
+/*
+---------------------------------------------------------
+  show single advertise with details
+---------------------------------------------------------
+*/
 exports.getSingleAdvertise = (req, res) => {
 
   const id = parseInt(req.params.id, 0);
@@ -61,6 +68,39 @@ exports.getSingleAdvertise = (req, res) => {
   }
 }
 
+/*
+---------------------------------------------------------
+  search advertises in all categories
+---------------------------------------------------------
+*/
+exports.searchAll = (req, res) => {
+
+  const term = req.params.term;
+
+  advertisesModel.searchResult(term).then((data) => {
+    if (!data || data.length <= 0){
+      res.status(404).json({ message: 'Not Found!' });
+    } else {
+      res.status(200).json({ message: 'Success', length: data.length, data: data });
+    }
+  })
+  .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e }));
+}
+
+/*
+---------------------------------------------------------
+  search advertises in specific category
+---------------------------------------------------------
+*/
+exports.searchInCategory = (req, res) => {
+  res.status(500).json({ message: 'Error' });
+}
+
+/* Create new Advertises */
+// exports.createAdvertise = (req, res) => {
+//   res.status(500).json({ message: 'Error' });
+// }
+
 /* Modify single Advertises by ID */
 exports.modifySingleAdvertise = (req, res) => {
   res.status(500).json({ message: 'Error' });
@@ -68,15 +108,5 @@ exports.modifySingleAdvertise = (req, res) => {
 
 /* Delete  Advertises by ID */
 exports.deleteSingleAdvertise = (req, res) => {
-  res.status(500).json({ message: 'Error' });
-}
-
-/* Get Advertises based on search / filer */
-exports.getSearchResult = (req, res) => {
-  res.status(500).json({ message: 'Error' });
-}
-
-/* Get Advertises in partiular category */
-exports.showAdInCategory = (req, res) => {
   res.status(500).json({ message: 'Error' });
 }

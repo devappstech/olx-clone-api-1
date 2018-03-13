@@ -1,16 +1,12 @@
 const database = require('../../database/database');
 
-exports.calculatePagination = (itemsPerPage, currentPage) =>{
-  return ({
-    per_page: itemsPerPage,
-    current_page: currentPage,
-    from: ((currentPage - 1) * itemsPerPage) + 1,
-    to: currentPage * itemsPerPage
-  })
-}
-
+/*
+---------------------------------------------------------
+  Advertise Models: recentAds - show recent advertise
+  according to pagination
+---------------------------------------------------------
+*/
 exports.recentAds = (from, to) => {
-
 
   const QueryRecentAds = database.queryBuilder
   .select()
@@ -40,6 +36,12 @@ exports.recentAds = (from, to) => {
   return database.executeQuery(QueryRecentAds);
 }
 
+/*
+---------------------------------------------------------
+  Advertise Models: singleAd - show single advertise
+  with details
+---------------------------------------------------------
+*/
 exports.singleAd = (advertiseID) => {
   const QuerySingleAds = database.queryBuilder
   .select()
@@ -64,10 +66,15 @@ exports.singleAd = (advertiseID) => {
   .where('advertises.advertise_id = ?', advertiseID)
   .toParam();
 
-  //console.log("QuerySingleAds", QuerySingleAds);
   return database.executeQuery(QuerySingleAds);
 }
 
+/*
+---------------------------------------------------------
+  Advertise Models: searchResult - search advertises in
+  all category
+---------------------------------------------------------
+*/
 exports.searchResult = (searchKeyword) => {
   const QuerySearchResult = database.queryBuilder
   .select()
@@ -88,7 +95,7 @@ exports.searchResult = (searchKeyword) => {
   .join('cities', null, 'advertises.advertise_city_id = cities.city_id')
   .join('states', null, 'cities.city_state_id = states.state_id')
   .join('categories', null, 'categories.category_id = advertises.advertise_category_id')
-  .left_join('images', null, 'images.image_advertise_id = advertises.advertise_id')
+  .join('images', null, 'images.image_advertise_id = advertises.advertise_id')
   .where(database.queryBuilder.expr()
     .and('advertise_title ilike ?', '%' + searchKeyword + '%')
     .or('advertise_description ilike ?', '%' + searchKeyword + '%'))
