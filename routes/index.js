@@ -48,6 +48,6 @@ router.get('/users/ads', isAuthTrue.isAuth, usersController.userAdvertise);
 router.get('/users/ads/:id', usersController.userAdvertise);
 router.put('/users/password/update', isAuthTrue.isAuth, usersController.resetPassword);
 router.post('/users/status/email', usersController.isEmailAvailable);
-router.get('/users/status', isAuthTrue.isAuth, usersController.loginStatus);
+router.get('/users/auth/status', isAuthTrue.isAuth, usersController.loginStatus);
 
 module.exports = router;
