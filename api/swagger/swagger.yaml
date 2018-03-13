@@ -727,7 +727,7 @@ paths:
         '403':
           description: Unauthorized
 
-  /users/status:
+  /users/auth/status:
     get:
       tags:
       - "users"

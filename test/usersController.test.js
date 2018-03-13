@@ -228,12 +228,12 @@ describe('POST /api/users/status/email', () => {
 
 /*
 ----------------------------------------------------
-  Users Controller: GET /api/users/status
+  Users Controller: GET /api/users/auth/status
 ----------------------------------------------------
 */
-describe('GET /api/users/status', () => {
+describe('GET /api/users/auth/status', () => {
   it('should fetch details of a logged in user', (done) => {
-    const req = request(app).get('/api/users/status')
+    const req = request(app).get('/api/users/auth/status')
     req.cookies = cookies;
     req
     .expect(200)
