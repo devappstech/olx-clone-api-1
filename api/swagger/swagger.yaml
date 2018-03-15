@@ -595,6 +595,8 @@ paths:
            application/json:
             schema:
              $ref: '#/components/schemas/400response'
+        '403':
+          description: Unauthorized
 
   /users/ads/{id}:
     get:
@@ -664,7 +666,8 @@ paths:
            application/json:
             schema:
              $ref: '#/components/schemas/400response'
-
+        '403':
+          description: Unauthorized
 
   /users/logout:
     get:
@@ -721,6 +724,41 @@ paths:
            application/json:
             schema:
              $ref: '#/components/schemas/400response'
+        '403':
+          description: Unauthorized
+
+  /users/auth/status:
+    get:
+      tags:
+      - "users"
+      description: Send Data Of loggedin local user
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/200LoginResponse'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+        '403':
+          description: Unauthorized
 
   /users/password/update:
     put:
@@ -757,6 +795,8 @@ paths:
            application/json:
             schema:
              $ref: '#/components/schemas/400response'
+        '403':
+          description: Unauthorized
 
 components:
   schemas:

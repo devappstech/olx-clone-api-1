@@ -285,3 +285,33 @@ exports.isEmailAvailable = (req, res) => {
     res.status(400).json({ message: 'Invalid Data!' });
   }
 }
+
+/*
+------------------------------------------------------------------
+  User Controller Function to check User's Status if loggin in
+------------------------------------------------------------------
+*/
+exports.loginStatus = (req, res) => {
+
+  if (!req.session.passport){
+    res.status(200).json({ Auth: false });
+
+  } else {
+    const id = parseInt(req.session.passport.user.user_id, 0);
+    const result = Joi.validate({ userId: id }, validateUsersId);
+
+    if (result.error === null){
+      usersModel.findById(id)
+      .then((data) => {
+        if (!data && data.length === 0) {
+          res.status(404).json({ message: 'Not Found!' });
+        } else {
+          res.status(200).json({ message: 'Success', Auth: req.isAuthenticated(), data: data });
+        }
+      })
+      .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+    } else {
+      res.status(400).json({ message: 'Invalid Data!' });
+    }
+  }
+}
