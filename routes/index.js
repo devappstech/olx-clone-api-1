@@ -23,7 +23,7 @@ router.get('/ads', advertiseController.getRecentAdvertise);
 // --> [Pending] <--- router.post('/ads', advertiseController.createAdvertise);
 router.get('/ads/:id', advertiseController.getSingleAdvertise);
 router.put('/ads/:id', advertiseController.modifySingleAdvertise);
-router.delete('/ads/:id', advertiseController.deleteSingleAdvertise);
+router.delete('/ads/:id', isAuthTrue.isAuth, advertiseController.deleteSingleAdvertise);
 router.get('/ads/results/:term', advertiseController.searchAll);
 router.get('/ads/:categorName/:term', advertiseController.searchInCategory);
 

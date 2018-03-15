@@ -36,6 +36,17 @@ exports.recentAds = (from, to) => {
   return database.executeQuery(QueryRecentAds);
 }
 
+exports.countRecords = () => {
+  const countQueryRecentAds = database.queryBuilder
+  .select()
+  .from('advertises')
+  .count('advertise_id')
+  .group('advertise_id')
+  .toParam();
+
+  return database.executeQuery(countQueryRecentAds);
+}
+
 /*
 ---------------------------------------------------------
   Advertise Models: singleAd - show single advertise
@@ -75,7 +86,7 @@ exports.singleAd = (advertiseID) => {
   all category
 ---------------------------------------------------------
 */
-exports.searchResult = (searchKeyword) => {
+exports.searchResult = (from, to, searchKeyword, minPrice, maxPrice) => {
   const QuerySearchResult = database.queryBuilder
   .select()
   .from('advertises')
@@ -99,8 +110,23 @@ exports.searchResult = (searchKeyword) => {
   .where(database.queryBuilder.expr()
     .and('advertise_title ilike ?', '%' + searchKeyword + '%')
     .or('advertise_description ilike ?', '%' + searchKeyword + '%'))
+  .where('advertise_price >= ?', minPrice)
+  .where('advertise_price <= ?', maxPrice)
   .order('advertise_timestamp', false)
+  .limit(to)
+  .offset(from)
   .toParam();
 
   return database.executeQuery(QuerySearchResult);
+}
+
+exports.deleteAdvertise = (id, userId) => {
+  const deleteAdvertiseQuery = database.queryBuilder
+  .delete()
+  .from('advertises')
+  .where('advertise_id = ?', id)
+  .where('advertise_user_id = ?', userId)
+  .toParam();
+
+  return database.executeQuery(deleteAdvertiseQuery);
 }
