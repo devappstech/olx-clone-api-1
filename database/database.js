@@ -12,7 +12,7 @@ if (dotenv.error) {
   Squel Options for Postgres
 -----------------------------------------------
 */
-squel.cls.DefaultQueryBuilderOptions.autoQuoteFieldNames = true;
+squel.cls.DefaultQueryBuilderOptions.autoQuoteFieldNames = false;
 squel.cls.DefaultQueryBuilderOptions.autoQuoteTableNames = true;
 squel.cls.DefaultQueryBuilderOptions.autoQuoteAliasNames = true;
 squel.cls.DefaultQueryBuilderOptions.nameQuoteCharacter = '"';

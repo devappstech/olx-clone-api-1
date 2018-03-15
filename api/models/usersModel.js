@@ -191,3 +191,23 @@ exports.isEmailAvailable = (email) => {
 
   return database.executeQuery(EmailAvailable);
 }
+
+/*
+---------------------------------------------------------
+  Users Models: countUserAdvertise - Check total logged in
+  users advertises.
+---------------------------------------------------------
+*/
+exports.countUserAdvertise = (id) => {
+
+  const countUserAdvertise = database.queryBuilder
+    .select()
+    .from('advertises')
+    .field('COUNT(advertise_user_id)', 'count')
+    .where('advertise_user_id = ?', id)
+    .group('advertise_user_id')
+    .toParam();
+
+  return database.executeQuery(countUserAdvertise);
+}
+

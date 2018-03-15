@@ -207,30 +207,74 @@ exports.userAdvertise = (req, res) => {
     id = parseInt(req.params.id, 0);
   }
 
+  var page = parseInt(req.query.page, 10);
+  if (isNaN(page) || page < 1) {
+    page = 1;
+  }
+  var limit = parseInt(req.query.limit, 10);
+  if (isNaN(limit)) {
+    limit = 10;
+  } else if (limit > 50) {
+    limit = 50;
+  } else if (limit < 1) {
+    limit = 1;
+  }
+
   // eslint-disable-next-line
   const result = Joi.validate({
     userId: id
   }, validateUsersId);
 
+  let advertiseData = [];
+  let count;
+
   if (!result.error){
-    usersModel.findUserAdvertises(id)
+
+
+    const userAdvertises = usersModel.findUserAdvertises(id)
     .then((data) => {
       if (!data && data.length === 0) {
         res.status(404).json({
           message: 'Not Found!'
         });
       } else {
-        res.status(200).json({
-          message: 'Success',
-          data: data
-        });
+        advertiseData = data;
       }
-
     })
     .catch(e => res.status(500).json({
       message: 'Error Occured!',
       Stack: e.stack
     }));
+
+    const userAdvertiseCount = usersModel.countUserAdvertise(id)
+    .then((data) => {
+      if (!data) {
+        res.status(404).json({
+          message: 'Not Found!'
+        });
+      } else {
+        count = data;
+      }
+    })
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
+
+    Promise.all([userAdvertises, userAdvertiseCount]).then((values) =>{
+      console.log(values);
+
+      res.status(200).json({
+        message: 'Success',
+        total: count,
+        data: advertiseData
+      });
+    })
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
+
   } else {
     res.status(406).json({
       message: 'Invalid Data!'
@@ -387,34 +431,40 @@ exports.isEmailAvailable = (req, res) => {
 */
 exports.loginStatus = (req, res) => {
 
-  const id = parseInt(req.session.passport.user.user_id, 0);
+  if (req.session.passport.user.user_id){
+    const id = parseInt(req.session.passport.user.user_id, 0);
 
-  const result = Joi.validate({
-    userId: id
-  }, validateUsersId);
+    const result = Joi.validate({
+      userId: id
+    }, validateUsersId);
 
-  if (!result.error){
-    usersModel.findById(id)
-    .then((data) => {
-      if (!data && data.length === 0) {
-        res.status(404).json({
-          message: 'Not Found!'
-        });
-      } else {
-        res.status(200).json({
-          message: 'Success',
-          Auth: req.isAuthenticated(),
-          data: data
-        });
-      }
-    })
-    .catch(e => res.status(500).json({
-      message: 'Error Occured!',
-      Stack: e.stack
-    }));
+    if (!result.error){
+      usersModel.findById(id)
+      .then((data) => {
+        if (!data && data.length === 0) {
+          res.status(404).json({
+            message: 'Not Found!'
+          });
+        } else {
+          res.status(200).json({
+            message: 'Success',
+            Auth: req.isAuthenticated(),
+            data: data
+          });
+        }
+      })
+      .catch(e => res.status(500).json({
+        message: 'Error Occured!',
+        Stack: e.stack
+      }));
+    } else {
+      res.status(400).json({
+        message: 'Invalid Data!'
+      });
+    }
   } else {
-    res.status(400).json({
-      message: 'Invalid Data!'
+    res.status(200).json({
+      Auth: false
     });
   }
 }

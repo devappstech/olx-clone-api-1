@@ -49,5 +49,6 @@ router.get('/users/ads/:id', usersController.userAdvertise);
 router.put('/users/password/update', isAuthTrue.isAuth, usersController.resetPassword);
 router.post('/users/status/email', usersController.isEmailAvailable);
 router.get('/users/auth/status', isAuthTrue.isAuth, usersController.loginStatus);
+//router.post('/users/password/forget', usersController.forgetPassword)
 
 module.exports = router;
