@@ -6,7 +6,7 @@ const database = require('../../database/database');
   according to pagination
 ---------------------------------------------------------
 */
-exports.recentAds = (from, to) => {
+exports.recentAds = (limit, offset) => {
 
   const QueryRecentAds = database.queryBuilder
   .select()
@@ -29,8 +29,8 @@ exports.recentAds = (from, to) => {
   .join('categories', null, 'categories.category_id = advertises.advertise_category_id')
   .join('images', null, 'images.image_advertise_id = advertises.advertise_id')
   .order('advertise_timestamp', false)
-  .limit(to)
-  .offset(from)
+  .limit(limit)
+  .offset(offset)
   .toParam();
 
   return database.executeQuery(QueryRecentAds);
@@ -40,8 +40,7 @@ exports.countRecords = () => {
   const countQueryRecentAds = database.queryBuilder
   .select()
   .from('advertises')
-  .count('advertise_id')
-  .group('advertise_id')
+  .field('count(advertise_id)', 'count')
   .toParam();
 
   return database.executeQuery(countQueryRecentAds);

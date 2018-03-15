@@ -12,15 +12,6 @@ const validateId = Joi.object().keys({
   .required()
 })
 
-// For Pagination
-const itemPerPage = 10;
-
-const calculatePagination = (itemsPerPage, currentPage) =>{
-  return ({
-    from: ((currentPage - 1) * itemsPerPage) + 1,
-  })
-}
-
 /*
 ---------------------------------------------------------
   show recent advertise according to pagination
@@ -28,34 +19,70 @@ const calculatePagination = (itemsPerPage, currentPage) =>{
 */
 exports.getRecentAdvertise = (req, res) => {
 
-  let page;
-  if (parseInt(req.query.page, 0)){
-    page = parseInt(req.query.page, 0);
-  } else {
+  // Pagination
+  let page = parseInt(req.query.page, 0);
+  if (isNaN(page) || page < 1) {
     page = 1;
   }
 
-  const from = calculatePagination(itemPerPage, page).from;
+  let limit = parseInt(req.query.limit, 0);
+  if (isNaN(limit)) {
+    limit = 10;
+  } else if (limit < 1) {
+    limit = 1;
+  }
 
-  advertisesModel.recentAds(from, itemPerPage).then((data) => {
-    if (!data || data.length <= 0){
+  let offset = (page - 1) * limit;
+  let advertiseData;
+  let count;
+
+  const recentAdvertise = advertisesModel.recentAds(limit, offset).then((data) => {
+    if (!data){
       res.status(404).json({ message: 'No Data Found' });
     } else {
-      advertisesModel.countRecords().then((count) => {
-        res.status(200).json({
-          message: 'Success',
-          metadata: {
-            total: count,
-            length: data.length
-          },
-          data: data });
-      })
+      advertiseData = data;
     }
   })
   .catch(e => res.status(500).json({
     message: 'Error Occured!',
     Stack: e
   }));
+
+  const advertiseCount = advertisesModel.countRecords()
+  .then((data) => {
+    if (!data) {
+      res.status(404).json({
+        message: 'Not Found!'
+      });
+    } else {
+      count = parseInt(data[0].count, 0);
+    }
+  })
+  .catch(e => res.status(500).json({
+    message: 'Error Occured!',
+    Stack: e.stack
+  }));
+
+  Promise.all([recentAdvertise, advertiseCount]).then((values) => {
+    console.log(values);
+    res.status(200).json({
+      message: 'Success',
+      metadata: {
+        currentPage: page,
+        limit: limit,
+        displaing: advertiseData.length,
+        total: count,
+        last_page: Math.ceil(count / limit)
+      },
+      data: advertiseData
+    });
+  })
+  .catch(e => res.status(500).json({
+    message: 'Error Occured!',
+    Stack: e.stack
+  }));
+
+
 }
 
 /*
@@ -67,18 +94,16 @@ exports.getSingleAdvertise = (req, res) => {
 
   const id = parseInt(req.params.id, 0);
 
-  const result = Joi.validate(
-    {
-      advertiseId: id
-    }, validateId);
+  const result = Joi.validate({
+    advertiseId: id
+  }, validateId);
 
   if (!result.error){
     advertisesModel.singleAd(id).then((data) => {
       if (!data || data.length <= 0){
-        res.status(404).json(
-          {
-            message: 'Not Found!'
-          });
+        res.status(404).json({
+          message: 'Not Found!'
+        });
       } else {
         res.status(200).json({
           message: 'Success', data: data
@@ -102,19 +127,13 @@ exports.getSingleAdvertise = (req, res) => {
 */
 exports.searchAll = (req, res) => {
 
-  let page;
-  if (parseInt(req.query.page, 0)){
-    page = parseInt(req.query.page, 0);
-  } else {
-    page = 1;
-  }
-
-  const from = calculatePagination(itemPerPage, page).from;
+  const itemPerPage = 10;
+  const from = 10;
   const term = slug(req.params.term, ' ');
 
   const filterArray = [
     parseInt(req.query.minPrice, 0) || defaultMinPrice,
-    parseInt(req.query.maxPrice, 0) || defaultMaxPrice,
+    parseInt(req.query.maxPrice, 0) || defaultMaxPrice
   ]
 
   advertisesModel.searchResult(from, itemPerPage, term, ...filterArray)
