@@ -14,8 +14,8 @@ describe('Insert new User', () => {
   };
 
   const newUser = {
-    username: 'test',
-    email: 'testmeagain1@test.com',
+    username: 'test1',
+    email: 'testmeagain11@test.com',
     phone: 1234567890
   };
 
@@ -49,7 +49,7 @@ describe('Insert new local user auth', () => {
   };
 
   const newUserAuth = {
-    id: 115,
+    id: 110,
     password: 'secertAdmin'
   };
 
@@ -110,9 +110,9 @@ describe('Find Local user and Return user and auth data', () => {
   });
 
   it('should return data array with length 1', () => {
-    return usersModel.findLocalUser('ac.mattis@ultriciesadipiscing.net')
+    return usersModel.findLocalUser('akash@improwised.com')
       .then(data => {
-        expect(data[0].user_email).toBe('ac.mattis@ultriciesadipiscing.net');
+        expect(data[0].user_email).toBe('akash@improwised.com');
       })
   });
 
@@ -126,7 +126,7 @@ describe('Find Local user and Return user and auth data', () => {
 */
 describe('Find Advertises submitted by user id', () => {
   it('should return data array', () => {
-    return usersModel.findUserAdvertises(1)
+    return usersModel.findUserAdvertises(10, 10, 1)
       .then(data => {
         expect(data).toBeTruthy();
       })
@@ -208,4 +208,19 @@ describe('check if new users email is already in database ot not.', () => {
       })
   });
 
+});
+
+/*
+---------------------------------------------------------
+  Users Models: countUserAdvertise - Check total logged in
+  users advertises.
+---------------------------------------------------------
+*/
+describe('Check total logged in users advertises.', () => {
+  it('should return count data array', () => {
+    return usersModel.countUserAdvertise()
+      .then(data => {
+        expect(data).toBeTruthy();
+      })
+  });
 });

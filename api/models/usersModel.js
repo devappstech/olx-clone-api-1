@@ -226,7 +226,41 @@ exports.resetEmailEntry = (email, uuid) => {
     .into('reset_password')
     .set('reset_user_email', email)
     .set('reset_token', uuid)
+    .returning('*')
     .toParam();
 
   return database.executeQuery(resetEmailEntry);
+}
+
+/*
+---------------------------------------------------------
+  Users Models: findbyEmail - find user's id by email
+---------------------------------------------------------
+*/
+exports.findIdByEmail = (email) => {
+
+  const findIdByEmail = database.queryBuilder
+    .select()
+    .from('users')
+    .where('user_email = ?', email)
+    .toParam();
+
+  return database.executeQuery(findIdByEmail);
+}
+
+/*
+---------------------------------------------------------
+  Users Models: findbyEmail - find user's id by email
+---------------------------------------------------------
+*/
+exports.findByToken = (token) => {
+
+  const findByToken = database.queryBuilder
+    .select()
+    .from('reset_password')
+    .join('users', null, 'user_email = reset_user_email')
+    .where('reset_token = ?', token)
+    .toParam();
+
+  return database.executeQuery(findByToken);
 }

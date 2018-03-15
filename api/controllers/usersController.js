@@ -1,4 +1,5 @@
 const usersModel = require('../models/usersModel');
+const emailService = require('../services/sendEmail');
 const Joi = require('joi');
 const uuidv4 = require('uuid/v4');
 const bcrypt = require('bcrypt');
@@ -47,6 +48,12 @@ const validateUsersPassword = Joi.object().keys({
 // schema for user's Email Available or not?
 const validateUsersEmail = Joi.object().keys({
   userEmail: Joi.string().email()
+  .required()
+})
+
+// schema for user's ID
+const validateTokenSchema = Joi.object().keys({
+  tokenSyntax: Joi.string().guid()
   .required()
 })
 
@@ -478,7 +485,7 @@ exports.loginStatus = (req, res) => {
 
 /*
 ------------------------------------------------------------------
-  User Controller Function to reset User's password using email
+  User Controller Function to send email of link to reset password
 ------------------------------------------------------------------
 */
 exports.forgetPassword = (req, res) => {
@@ -493,35 +500,37 @@ exports.forgetPassword = (req, res) => {
 
   if (!result.error){
 
-    // usersModel.isEmailAvailable(email)
-    //   .then((data) => {
-    //     if (!data){
-
-    //     }
-    //   })
-    //   .catch(e => res.status(500).json({
-    //     message: 'Error Occured!',
-    //     Stack: e.stack
-    //   }));
-
-    usersModel.resetEmailEntry(email, newUuid)
-    .then((data) => {
-      if (!data) {
-        res.status(404).json({
-          message: 'Not Found!'
-        });
-      } else {
-        res.status(200).json({
-          message: 'Success',
-          data: data
-        });
-      }
-    })
-    .catch(e => res.status(500).json({
-      message: 'Error Occured!',
-      Stack: e.stack
-    }));
-
+    usersModel.findIdByEmail(email)
+      .then((data) => {
+        if (!data || data.length === 0 || data.length > 1){
+          res.status(404).json({
+            message: 'Not Found!'
+          });
+        } else {
+          usersModel.resetEmailEntry(email, newUuid)
+          .then((data) => {
+            if (!data) {
+              res.status(404).json({
+                message: 'Not Found!'
+              });
+            } else {
+              res.status(200).json({
+                message: 'Success'
+              });
+              const link = process.env.BASE_URL + '/api/users/password/reset/' + data[0].reset_token;
+              emailService.sendEmailLink(email, link);
+            }
+          })
+          .catch(e => res.status(500).json({
+            message: 'Error Occured!',
+            Stack: e.stack
+          }));
+        }
+      })
+      .catch(e => res.status(500).json({
+        message: 'Error Occured!',
+        Stack: e.stack
+      }));
 
   } else {
     res.status(400).json({
@@ -529,4 +538,81 @@ exports.forgetPassword = (req, res) => {
     });
   }
 
+}
+
+/*
+------------------------------------------------------------------
+  User Controller Function to set new User's password using email
+------------------------------------------------------------------
+*/
+exports.setNewPassword = (req, res) => {
+  const token = req.params.token;
+  const password = req.body.password;
+
+  const result = Joi.validate({
+    tokenSyntax: token
+  }, validateTokenSchema);
+
+  const resultPassword = Joi.validate({
+    userPassword: password
+  }, validateUsersPassword);
+
+  if (!result.error && !resultPassword.error){
+    usersModel.findByToken(token).then((data) => {
+      if (!data || data.length === 0){
+        res.status(404).json({
+          message: 'Not Found!'
+        });
+
+      } else {
+        bcrypt.hash(password, saltRounds).then(function(hash) {
+          usersModel.resetPassword(data[0].user_id, hash)
+          .then((data) => {
+            if (!data) {
+              res.status(404).json({
+                message: 'Not Found!'
+              });
+            } else {
+              res.status(200).json({
+                message: 'Success',
+                data: data
+              });
+            }
+
+          })
+          .catch(e => res.status(500).json({
+            message: 'Error Occured!',
+            Stack: e.stack
+          }));
+        })
+        .catch(e => res.status(500).json({
+          message: 'Error Occured!',
+          Stack: e.stack
+        }));
+
+      }
+
+    })
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
+  } else {
+    res.status(400).json({
+      message: 'Invalid Data'
+    })
+  }
+}
+
+/*
+------------------------------------------------------------------
+  User Controller Function called when token is valid as get
+  request
+------------------------------------------------------------------
+*/
+exports.sucessToken = (req, res) => {
+  res.status(200).json({
+    message: 'Success',
+    validToken: true
+  });
 }
