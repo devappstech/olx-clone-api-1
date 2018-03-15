@@ -62,26 +62,41 @@ exports.create = (req, res) => {
   const phone = parseInt(req.body.phone, 0);
   const password = req.body.password
 
-  // eslint-disable-next-line
-  const result = Joi.validate({ newUserName: userName, userEmail: email, userPassword: password, userPhone: phone }, validateNewUser);
+  const result = Joi.validate({
+    newUserName: userName,
+    userEmail: email,
+    userPassword: password,
+    userPhone: phone
+  }, validateNewUser);
 
-  if (result.error === null) {
+  if (!result.error) {
     bcrypt.hash(password, saltRounds).then(function(hash) {
       usersModel.createLocalUser(userName, email, phone)
       .then(data => usersModel.createLocalUserAuth(data[0].user_id, hash))
       .then((data) => {
         if (!data) {
-          res.status(404).json({ message: 'Not Found!' });
+          res.status(404).json({
+            message: 'Not Found!'
+          });
         } else {
-          res.status(201).json({ message: 'Success', data: data });
+          res.status(201).json({
+            message: 'Success', data: data
+          });
         }
 
       })
-      .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+      .catch(e => res.status(500).json({
+        message: 'Error Occured!', Stack: e.stack
+      }));
     })
-    .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
   } else {
-    res.status(400).json({ message: 'Invalid Data!' });
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
   }
 
 }
@@ -100,22 +115,33 @@ exports.viewProfile = (req, res) => {
     id = parseInt(req.params.id, 0);
   }
 
-  // eslint-disable-next-line
-  const result = Joi.validate({ userId: id }, validateUsersId);
+  const result = Joi.validate({
+    userId: id
+  }, validateUsersId);
 
-  if (result.error === null){
+  if (!result.error){
     usersModel.findUserProfile(id)
     .then((data) => {
       if (!data || data.length === 0) {
-        res.status(404).json({ message: 'Not Found!' });
+        res.status(404).json({
+          message: 'Not Found!'
+        });
       } else {
-        res.status(200).json({ message: 'Success', data: data });
+        res.status(200).json({
+          message: 'Success',
+          data: data
+        });
       }
 
     })
-    .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
   } else {
-    res.status(400).json({ message: 'Invalid Data!' });
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
   }
 }
 
@@ -132,24 +158,38 @@ exports.editProfile = (req, res) => {
   const email = req.body.email;
   const phone = parseInt(req.body.phone, 0);
 
-  // eslint-disable-next-line
-  const result = Joi.validate({ newUserName: userName, userEmail: email, userPhone: phone }, validateUser);
-  // eslint-disable-next-line
-  const resultId = Joi.validate({ userId: id }, validateUsersId);
+  const result = Joi.validate({
+    newUserName: userName,
+    userEmail: email,
+    userPhone: phone
+  }, validateUser);
 
-  if (result.error === null && resultId.error === null){
+  const resultId = Joi.validate({
+    userId: id
+  }, validateUsersId);
+
+  if (!result.error && !resultId.error){
     usersModel.editUser(id, userName, email, phone)
     .then((data) => {
       if (!data) {
-        res.status(404).json({ message: 'Not Found!' });
+        res.status(404).json({
+          message: 'Not Found!'
+        });
       } else {
-        res.status(200).json({ message: 'Success', data: data });
+        res.status(200).json({
+          message: 'Success', data: data
+        });
       }
 
     })
-    .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
   } else {
-    res.status(400).json({ message: 'Invalid Data!' });
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
   }
 }
 
@@ -168,21 +208,33 @@ exports.userAdvertise = (req, res) => {
   }
 
   // eslint-disable-next-line
-  const result = Joi.validate({ userId: id }, validateUsersId);
+  const result = Joi.validate({
+    userId: id
+  }, validateUsersId);
 
-  if (result.error === null){
+  if (!result.error){
     usersModel.findUserAdvertises(id)
     .then((data) => {
       if (!data && data.length === 0) {
-        res.status(404).json({ message: 'Not Found!' });
+        res.status(404).json({
+          message: 'Not Found!'
+        });
       } else {
-        res.status(200).json({ message: 'Success', data: data });
+        res.status(200).json({
+          message: 'Success',
+          data: data
+        });
       }
 
     })
-    .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
   } else {
-    res.status(406).json({ message: 'Invalid Data!' });
+    res.status(406).json({
+      message: 'Invalid Data!'
+    });
   }
 }
 
@@ -195,21 +247,33 @@ exports.login = (req, res) => {
 
   const id = req.user.user_id;
 
-  // eslint-disable-next-line
-  const result = Joi.validate({ userId: id }, validateUsersId);
+  const result = Joi.validate({
+    userId: id
+  }, validateUsersId);
 
-  if (result.error === null){
+  if (!result.error){
     usersModel.findUserProfile(id)
     .then((data) => {
       if (!data && data.length === 0) {
-        res.status(404).json({ message: 'Not Found!' });
+        res.status(404).json({
+          message: 'Not Found!'
+        });
       } else {
-        res.status(200).json({ message: 'Success', Auth: req.isAuthenticated(), data: data });
+        res.status(200).json({
+          message: 'Success',
+          Auth: req.isAuthenticated(),
+          data: data
+        });
       }
     })
-    .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
   } else {
-    res.status(400).json({ message: 'Invalid Data!' });
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
   }
 }
 
@@ -220,7 +284,9 @@ exports.login = (req, res) => {
 */
 exports.logout = (req, res) => {
   req.session.destroy();
-  res.status(200).json({ message: "Success" });
+  res.status(200).json({
+    message: "Success"
+  });
 }
 
 /*
@@ -234,27 +300,43 @@ exports.resetPassword = (req, res) => {
 
   const password = req.body.password;
 
-  // eslint-disable-next-line
-  const result = Joi.validate({ userPassword: password }, validateUsersPassword);
-  // eslint-disable-next-line
-  const resultId = Joi.validate({ userId: id }, validateUsersId);
+  const result = Joi.validate({
+    userPassword: password
+  }, validateUsersPassword);
 
-  if (result.error === null && resultId.error === null){
+  const resultId = Joi.validate({
+    userId: id
+  }, validateUsersId);
+
+  if (!result.error && !resultId.error){
     bcrypt.hash(password, saltRounds).then(function(hash) {
       usersModel.resetPassword(id, hash)
       .then((data) => {
         if (!data) {
-          res.status(404).json({ message: 'Not Found!' });
+          res.status(404).json({
+            message: 'Not Found!'
+          });
         } else {
-          res.status(200).json({ message: 'Success', data: data });
+          res.status(200).json({
+            message: 'Success',
+            data: data
+          });
         }
 
       })
-      .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+      .catch(e => res.status(500).json({
+        message: 'Error Occured!',
+        Stack: e.stack
+      }));
     })
-    .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
   } else {
-    res.status(400).json({ message: 'Invalid Data!' });
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
   }
 }
 
@@ -267,22 +349,34 @@ exports.isEmailAvailable = (req, res) => {
 
   const email = req.body.email;
 
-  // eslint-disable-next-line
-  const result = Joi.validate({ userEmail: email }, validateUsersEmail);
+  const result = Joi.validate({
+    userEmail: email
+  }, validateUsersEmail);
 
-  if (result.error === null){
+  if (!result.error){
     usersModel.isEmailAvailable(email)
     .then((data) => {
       if (!data || data.length > 0) {
-        res.status(400).json({ message: 'Email Found!', status: "Not Available" });
+        res.status(400).json({
+          message: 'Email Found!',
+          status: "Not Available"
+        });
       } else {
-        res.status(200).json({ message: 'Success', status: "Available" });
+        res.status(200).json({
+          message: 'Success',
+          status: "Available"
+        });
       }
 
     })
-    .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
   } else {
-    res.status(400).json({ message: 'Invalid Data!' });
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
   }
 }
 
@@ -295,20 +389,32 @@ exports.loginStatus = (req, res) => {
 
   const id = parseInt(req.session.passport.user.user_id, 0);
 
-  // eslint-disable-next-line
-  const result = Joi.validate({ userId: id }, validateUsersId);
+  const result = Joi.validate({
+    userId: id
+  }, validateUsersId);
 
-  if (result.error === null){
+  if (!result.error){
     usersModel.findById(id)
     .then((data) => {
       if (!data && data.length === 0) {
-        res.status(404).json({ message: 'Not Found!' });
+        res.status(404).json({
+          message: 'Not Found!'
+        });
       } else {
-        res.status(200).json({ message: 'Success', Auth: req.isAuthenticated(), data: data });
+        res.status(200).json({
+          message: 'Success',
+          Auth: req.isAuthenticated(),
+          data: data
+        });
       }
     })
-    .catch(e => res.status(500).json({ message: 'Error Occured!', Stack: e.stack }));
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
   } else {
-    res.status(400).json({ message: 'Invalid Data!' });
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
   }
 }
