@@ -109,7 +109,7 @@ exports.findUserProfile = (id) => {
   submited by user
 ---------------------------------------------------------
 */
-exports.findUserAdvertises = (id) => {
+exports.findUserAdvertises = (limit, offset, id) => {
 
   const findUserAdvertises = database.queryBuilder
     .select()
@@ -130,9 +130,11 @@ exports.findUserAdvertises = (id) => {
     .join('cities', null, 'advertises.advertise_city_id = cities.city_id')
     .join('states', null, 'cities.city_state_id = states.state_id')
     .join('categories', null, 'categories.category_id = advertises.advertise_category_id')
-    .left_join('images', null, 'images.image_advertise_id = advertises.advertise_id')
+    .join('images', null, 'images.image_advertise_id = advertises.advertise_id')
     .where('users.user_id = ?', id)
     .order('advertise_timestamp', false)
+    .limit(limit)
+    .offset(offset)
     .toParam();
 
   return database.executeQuery(findUserAdvertises);
@@ -211,3 +213,20 @@ exports.countUserAdvertise = (id) => {
   return database.executeQuery(countUserAdvertise);
 }
 
+/*
+---------------------------------------------------------
+  Users Models: createLocalUserAuth - insert new local users
+  auth
+---------------------------------------------------------
+*/
+exports.resetEmailEntry = (email, uuid) => {
+
+  const resetEmailEntry = database.queryBuilder
+    .insert()
+    .into('reset_password')
+    .set('reset_user_email', email)
+    .set('reset_token', uuid)
+    .toParam();
+
+  return database.executeQuery(resetEmailEntry);
+}

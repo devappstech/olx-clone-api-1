@@ -1,5 +1,6 @@
 const usersModel = require('../models/usersModel');
 const Joi = require('joi');
+const uuidv4 = require('uuid/v4');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -207,20 +208,21 @@ exports.userAdvertise = (req, res) => {
     id = parseInt(req.params.id, 0);
   }
 
-  var page = parseInt(req.query.page, 10);
+  // Pagination
+  let page = parseInt(req.query.page, 10);
   if (isNaN(page) || page < 1) {
     page = 1;
   }
-  var limit = parseInt(req.query.limit, 10);
+
+  let limit = parseInt(req.query.limit, 10);
   if (isNaN(limit)) {
     limit = 10;
-  } else if (limit > 50) {
-    limit = 50;
   } else if (limit < 1) {
     limit = 1;
   }
 
-  // eslint-disable-next-line
+  let offset = (page - 1) * limit;
+
   const result = Joi.validate({
     userId: id
   }, validateUsersId);
@@ -230,8 +232,7 @@ exports.userAdvertise = (req, res) => {
 
   if (!result.error){
 
-
-    const userAdvertises = usersModel.findUserAdvertises(id)
+    const userAdvertises = usersModel.findUserAdvertises(limit, offset, id)
     .then((data) => {
       if (!data && data.length === 0) {
         res.status(404).json({
@@ -253,7 +254,7 @@ exports.userAdvertise = (req, res) => {
           message: 'Not Found!'
         });
       } else {
-        count = data;
+        count = parseInt(data[0].count, 0);
       }
     })
     .catch(e => res.status(500).json({
@@ -263,10 +264,15 @@ exports.userAdvertise = (req, res) => {
 
     Promise.all([userAdvertises, userAdvertiseCount]).then((values) =>{
       console.log(values);
-
       res.status(200).json({
         message: 'Success',
-        total: count,
+        metadata: {
+          currentPage: page,
+          limit: limit,
+          displaing: advertiseData.length,
+          total: count,
+          last_page: Math.ceil(count / limit)
+        },
         data: advertiseData
       });
     })
@@ -431,9 +437,13 @@ exports.isEmailAvailable = (req, res) => {
 */
 exports.loginStatus = (req, res) => {
 
-  if (req.session.passport.user.user_id){
-    const id = parseInt(req.session.passport.user.user_id, 0);
+  if (!req.session.passport){
+    res.status(200).json({
+      Auth: false
+    });
 
+  } else {
+    const id = parseInt(req.session.passport.user.user_id, 0);
     const result = Joi.validate({
       userId: id
     }, validateUsersId);
@@ -462,9 +472,61 @@ exports.loginStatus = (req, res) => {
         message: 'Invalid Data!'
       });
     }
+  }
+
+}
+
+/*
+------------------------------------------------------------------
+  User Controller Function to reset User's password using email
+------------------------------------------------------------------
+*/
+exports.forgetPassword = (req, res) => {
+
+  const email = req.body.email;
+
+  const result = Joi.validate({
+    userEmail: email
+  }, validateUsersEmail);
+
+  const newUuid = uuidv4();
+
+  if (!result.error){
+
+    // usersModel.isEmailAvailable(email)
+    //   .then((data) => {
+    //     if (!data){
+
+    //     }
+    //   })
+    //   .catch(e => res.status(500).json({
+    //     message: 'Error Occured!',
+    //     Stack: e.stack
+    //   }));
+
+    usersModel.resetEmailEntry(email, newUuid)
+    .then((data) => {
+      if (!data) {
+        res.status(404).json({
+          message: 'Not Found!'
+        });
+      } else {
+        res.status(200).json({
+          message: 'Success',
+          data: data
+        });
+      }
+    })
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e.stack
+    }));
+
+
   } else {
-    res.status(200).json({
-      Auth: false
+    res.status(400).json({
+      message: 'Invalid Data!'
     });
   }
+
 }
