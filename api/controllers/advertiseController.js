@@ -22,9 +22,9 @@ const validateId = Joi.object().keys({
   create new advertise
 ---------------------------------------------------------
 */
-exports.createAdvertise = () => {
+// exports.createAdvertise = () => {
 
-}
+// }
 
 /*
 ---------------------------------------------------------

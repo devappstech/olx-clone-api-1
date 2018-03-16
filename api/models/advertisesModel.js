@@ -7,9 +7,25 @@ const database = require('../../database/database');
   advertise by just text information
 ---------------------------------------------------------
 */
-// exports.createAdvertise = () => {
+exports.createAdvertise = (userId, title, description, price, condition, categoryId, lat, long, cityId, stage) => {
 
-// }
+  const createAdvertiseQuery = database.queryBuilder
+  .insert()
+  .into('advertises')
+  .set('advertise_user_id', userId)
+  .set('advertise_title', title)
+  .set('advertise_description', description)
+  .set('advertise_price', price)
+  .set('advertise_condition', condition)
+  .set('advertise_category_id', categoryId)
+  .set('advertise_latitude', lat)
+  .set('advertise_longitude', long)
+  .set('advertise_city_id', cityId)
+  .set('advertise_stage', stage)
+  .toParam();
+
+  return database.executeQuery(createAdvertiseQuery);
+}
 
 
 /*
