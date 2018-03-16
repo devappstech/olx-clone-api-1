@@ -5,6 +5,12 @@ CREATE TYPE condition AS ENUM (
     'Worse'
 );
 
+CREATE TYPE stage as ENUM (
+    'stage1',
+    'stage2',
+    'published'
+);
+
 CREATE TABLE advertises (
     advertise_id serial PRIMARY KEY NOT NULL,
     advertise_user_id int NOT NULL,
@@ -18,6 +24,7 @@ CREATE TABLE advertises (
     advertise_timestamp timestamp NOT NULL,
     advertise_sold boolean DEFAULT false NOT NULL,
     advertise_city_id integer,
+    advertise_stage stage,
     CONSTRAINT fk_advertise_categoryid
     FOREIGN KEY (advertise_category_id)
     REFERENCES categories(category_id) ON DELETE SET NULL,

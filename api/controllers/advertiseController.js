@@ -12,6 +12,20 @@ const validateId = Joi.object().keys({
   .required()
 })
 
+// const newAdvertiseValidation = Joi.object().keys({
+//   advertiseId: Joi.number().integer()
+//   .required()
+// })
+
+/*
+---------------------------------------------------------
+  create new advertise
+---------------------------------------------------------
+*/
+exports.createAdvertise = () => {
+
+}
+
 /*
 ---------------------------------------------------------
   show recent advertise according to pagination
@@ -127,8 +141,21 @@ exports.getSingleAdvertise = (req, res) => {
 */
 exports.searchAll = (req, res) => {
 
-  const itemPerPage = 10;
-  const from = 10;
+  // Pagination
+  let page = parseInt(req.query.page, 0);
+  if (isNaN(page) || page < 1) {
+    page = 1;
+  }
+
+  let limit = parseInt(req.query.limit, 0);
+  if (isNaN(limit)) {
+    limit = 10;
+  } else if (limit < 1) {
+    limit = 1;
+  }
+
+  let offset = (page - 1) * limit;
+
   const term = slug(req.params.term, ' ');
 
   const filterArray = [
@@ -136,7 +163,7 @@ exports.searchAll = (req, res) => {
     parseInt(req.query.maxPrice, 0) || defaultMaxPrice
   ]
 
-  advertisesModel.searchResult(from, itemPerPage, term, ...filterArray)
+  advertisesModel.searchResult(limit, offset, term, ...filterArray)
   .then((data) => {
     if (!data || data.length <= 0){
       res.status(404).json({

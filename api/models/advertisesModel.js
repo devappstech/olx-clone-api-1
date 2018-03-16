@@ -1,5 +1,17 @@
 const database = require('../../database/database');
 
+
+/*
+---------------------------------------------------------
+  Advertise Models: createAdvertise - create partial
+  advertise by just text information
+---------------------------------------------------------
+*/
+// exports.createAdvertise = () => {
+
+// }
+
+
 /*
 ---------------------------------------------------------
   Advertise Models: recentAds - show recent advertise
@@ -85,7 +97,7 @@ exports.singleAd = (advertiseID) => {
   all category
 ---------------------------------------------------------
 */
-exports.searchResult = (from, to, searchKeyword, minPrice, maxPrice) => {
+exports.searchResult = (limit, offset, searchKeyword, minPrice, maxPrice) => {
   const QuerySearchResult = database.queryBuilder
   .select()
   .from('advertises')
@@ -112,8 +124,8 @@ exports.searchResult = (from, to, searchKeyword, minPrice, maxPrice) => {
   .where('advertise_price >= ?', minPrice)
   .where('advertise_price <= ?', maxPrice)
   .order('advertise_timestamp', false)
-  .limit(to)
-  .offset(from)
+  .limit(limit)
+  .offset(offset)
   .toParam();
 
   return database.executeQuery(QuerySearchResult);
