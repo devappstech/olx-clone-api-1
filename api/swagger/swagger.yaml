@@ -798,6 +798,42 @@ paths:
         '403':
           description: Unauthorized
 
+  /users/password/forget:
+    post:
+      tags:
+      - "users"
+      description: send email to user for link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestEmailStatus'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/EmailStatus'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
   /users/password/reset/{token}:
     get:
       tags:
