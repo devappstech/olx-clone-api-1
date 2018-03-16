@@ -798,6 +798,72 @@ paths:
         '403':
           description: Unauthorized
 
+  /users/password/reset/{token}:
+    get:
+      tags:
+      - "users"
+      description: validate user password reset token
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/200tokenResponse'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+    post:
+      tags:
+      - "users"
+      description: validate user password reset token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePassword'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
 components:
   schemas:
     state:
@@ -912,6 +978,16 @@ components:
           type: boolean
         data:
           type: array
+
+    200tokenResponse:
+      required:
+        - message
+        - validToken
+      properties:
+        message:
+          type: string
+        validToken:
+          type: boolean
 
     200LogoutResponse:
       required:
