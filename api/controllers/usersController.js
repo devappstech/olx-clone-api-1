@@ -519,7 +519,7 @@ exports.forgetPassword = (req, res) => {
               res.status(200).json({
                 message: 'Success'
               });
-              const link = process.env.BASE_URL + '/api/users/password/reset/' + data[0].reset_token;
+              const link = process.env.BASE_URL + '/account/resetaccountpassword?token=' + data[0].reset_token;
               emailService.sendEmailLink(account, email, link);
             }
           })
