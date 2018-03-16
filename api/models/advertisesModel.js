@@ -22,6 +22,7 @@ exports.createAdvertise = (userId, title, description, price, condition, categor
   .set('advertise_longitude', long)
   .set('advertise_city_id', cityId)
   .set('advertise_stage', stage)
+  .returning('*')
   .toParam();
 
   return database.executeQuery(createAdvertiseQuery);

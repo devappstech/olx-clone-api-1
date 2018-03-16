@@ -1,6 +1,20 @@
 const advertisesModel = require('../models/advertisesModel');
 const Joi = require('joi');
 const slug = require('slug');
+var multer = require('multer');
+
+const Storage = multer.diskStorage({
+  destination: function(req, file, callback) {
+    callback(null, "public/images");
+  },
+  filename: function(req, file, callback) {
+    callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+  }
+});
+
+const upload = multer({
+  storage: Storage
+}).array("ad", 4); //Field name and max count
 
 /* Default Filters */
 const defaultMinPrice = 1;
@@ -12,19 +26,100 @@ const validateId = Joi.object().keys({
   .required()
 })
 
-// const newAdvertiseValidation = Joi.object().keys({
-//   advertiseId: Joi.number().integer()
-//   .required()
-// })
+const newAdvertiseValidation = Joi.object().keys({
+  advertiseUserId: Joi.number().integer().required(),
+  advertiseTitle: Joi.string().required(),
+  advertiseDescription: Joi.string().required(),
+  advertisePrice: Joi.number().precision(2).required(),
+  advertiseCondition: Joi.string().required(),
+  advertiseCategoryId: Joi.number().integer().required(),
+  advertiseLat: Joi.number(),
+  advertiseLong: Joi.number(),
+  advertiseCityId: Joi.number().integer().required()
+}).with('advertiseLat', 'advertiseLong');
 
 /*
 ---------------------------------------------------------
   create new advertise
 ---------------------------------------------------------
 */
-// exports.createAdvertise = () => {
+exports.createAdvertise = (req, res) => {
+  const userId = parseInt(req.session.passport.user.user_id, 0);
+  const title = req.body.title;
+  const description = req.body.description;
+  const price = req.body.price;
+  const condition = req.body.condition;
+  const categoryId = req.body.categoryId;
+  const lat = req.body.lat;
+  const long = req.body.long;
+  const cityId = req.body.cityId;
+  const stage = 'stage1';
 
-// }
+  let result;
+
+  if (lat || long){
+    result = Joi.validate({
+      advertiseUserId: userId,
+      advertiseTitle: title,
+      advertiseDescription: description,
+      advertisePrice: price,
+      advertiseCondition: condition,
+      advertiseCategoryId: categoryId,
+      advertiseLat: lat,
+      advertiseLong: long,
+      advertiseCityId: cityId
+    }, newAdvertiseValidation);
+  } else {
+    result = Joi.validate({
+      advertiseUserId: userId,
+      advertiseTitle: title,
+      advertiseDescription: description,
+      advertisePrice: price,
+      advertiseCondition: condition,
+      advertiseCategoryId: categoryId,
+      advertiseCityId: cityId
+    }, newAdvertiseValidation);
+  }
+
+  if (!result.error){
+    advertisesModel.createAdvertise(userId, title, description, price, condition, categoryId, lat, long, cityId, stage)
+    .then((data) => {
+      if (!data || data.length <= 0){
+        res.status(404).json({
+          message: 'Not Found!'
+        });
+      } else {
+        res.status(200).json({
+          message: 'Success', data: data
+        });
+      }
+    })
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!', Stack: e
+    }));
+  } else {
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
+  }
+
+}
+
+/*
+---------------------------------------------------------
+  show recent advertise according to pagination
+---------------------------------------------------------
+*/
+exports.uploadAdvertiseImages = (req, res) => {
+  upload(req, res, function(err) {
+    console.log(err);
+    if (err) {
+      return res.send("Something went wrong!");
+    }
+    return res.send("File uploaded sucessfully!.");
+  });
+}
+
 
 /*
 ---------------------------------------------------------

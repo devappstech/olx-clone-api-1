@@ -21,7 +21,7 @@ CREATE TABLE advertises (
     advertise_category_id int,
     advertise_latitude numeric(9,6),
     advertise_longitude numeric(9,6),
-    advertise_timestamp timestamp NOT NULL,
+    advertise_timestamp timestamp default now() NOT NULL,
     advertise_sold boolean DEFAULT false NOT NULL,
     advertise_city_id integer,
     advertise_stage stage,
