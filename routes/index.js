@@ -3,6 +3,11 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
+/* GET Default Express page. */
+router.get('/', (req, res) => {
+  res.render('index', { title: 'Index of Express' });
+});
+
 // Controllers
 const advertiseController = require('../api/controllers/advertiseController');
 const categoriesController = require('../api/controllers/categoriesController');
@@ -10,15 +15,10 @@ const statesController = require('../api/controllers/statesController');
 const usersController = require('../api/controllers/usersController');
 
 //Middlewares
-const isAuthTrue = require('../api/middlewares/successAuth');
-const validateLink = require('../api/middlewares/validateLink');
 // eslint-disable-next-line
 const passportSetup = require('../api/middlewares/passportSetup');
-
-/* GET home page. */
-router.get('/', (req, res) => {
-  res.render('index', { title: 'Index of Express' });
-});
+const isAuthTrue = require('../api/middlewares/successAuth');
+const validateLink = require('../api/middlewares/validateLink');
 
 /* Adverties Controller Functions */
 router.get('/ads', advertiseController.getRecentAdvertise);

@@ -4,7 +4,10 @@ const Joi = require('joi');
 const uuidv4 = require('uuid/v4');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-
+const account = {
+  user: process.env.emailUser.toString(),
+  password: process.env.emailPassword.toString()
+}
 /*
 ------------------------------------------------------------------
   User Schemas to Validate data
@@ -269,8 +272,7 @@ exports.userAdvertise = (req, res) => {
       Stack: e.stack
     }));
 
-    Promise.all([userAdvertises, userAdvertiseCount]).then((values) =>{
-      console.log(values);
+    Promise.all([userAdvertises, userAdvertiseCount]).then(() =>{
       res.status(200).json({
         message: 'Success',
         metadata: {
@@ -518,7 +520,7 @@ exports.forgetPassword = (req, res) => {
                 message: 'Success'
               });
               const link = process.env.BASE_URL + '/api/users/password/reset/' + data[0].reset_token;
-              emailService.sendEmailLink(email, link);
+              emailService.sendEmailLink(account, email, link);
             }
           })
           .catch(e => res.status(500).json({

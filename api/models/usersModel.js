@@ -215,8 +215,8 @@ exports.countUserAdvertise = (id) => {
 
 /*
 ---------------------------------------------------------
-  Users Models: createLocalUserAuth - insert new local users
-  auth
+  Users Models: createLocalUserAuth - insert new reset
+  password of users auth
 ---------------------------------------------------------
 */
 exports.resetEmailEntry = (email, uuid) => {
@@ -250,7 +250,7 @@ exports.findIdByEmail = (email) => {
 
 /*
 ---------------------------------------------------------
-  Users Models: findbyEmail - find user's id by email
+  Users Models: findByToken - find user's id by token
 ---------------------------------------------------------
 */
 exports.findByToken = (token) => {

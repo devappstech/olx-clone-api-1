@@ -1,23 +1,47 @@
 const usersModel = require('../api/models/usersModel');
 
 /*
+Constant Variables for Testcases
+*/
+const oldUser = {
+  username: 'test',
+  email: 'r@r.com',
+  phone: 1234567890
+};
+const newUser = {
+  username: 'test1',
+  email: 'testmeagain11@test.com',
+  phone: 1234567890
+};
+const oldUserAuth = {
+  id: 1,
+  password: '123456789'
+};
+const newUserAuth = {
+  id: 110,
+  password: 'secertAdmin'
+};
+const modifyUser = {
+  username: 'user name updated',
+  email: 'usernew@gmail.com',
+  phone: 1234567890
+}
+const oldEmail = 'akash@improwised.com';
+const newEmail = 'somethingNew@gmail.com';
+const advertiseId = 1;
+const nonRegisteredEmail = 'notRegisteredUser@user.com';
+const registeredEmail = 'akash@improwised.com';
+const profileId = 1;
+const invaldProfileID = 4561320;
+const newPassword = '123456789'
+const passwordResetToken = 'e5984a7d-b305-418c-a14b-d8466cbf1290';
+
+/*
 ---------------------------------------------------------
   Users Models: createLocalUser - insert new local users
 ---------------------------------------------------------
 */
 describe('Insert new User', () => {
-
-  const oldUser = {
-    username: 'test',
-    email: 'r@r.com',
-    phone: 1234567890
-  };
-
-  const newUser = {
-    username: 'test1',
-    email: 'testmeagain11@test.com',
-    phone: 1234567890
-  };
 
   it('should return undefined', () => {
     return usersModel.createLocalUser(oldUser.username, oldUser.email, oldUser.phone)
@@ -42,16 +66,6 @@ describe('Insert new User', () => {
 ---------------------------------------------------------
 */
 describe('Insert new local user auth', () => {
-
-  const oldUserAuth = {
-    id: 1,
-    password: '123456789'
-  };
-
-  const newUserAuth = {
-    id: 110,
-    password: 'secertAdmin'
-  };
 
   it('should return undefined', () => {
     return usersModel.createLocalUserAuth(oldUserAuth.id, oldUserAuth.password)
@@ -79,16 +93,16 @@ describe('Find user and send user data', () => {
 
   it('should return undefined', () => {
     // 1000000 is invalid id
-    return usersModel.findUserProfile(1000000)
+    return usersModel.findUserProfile(invaldProfileID)
       .then(data => {
         expect(data[0]).toBeUndefined();
       })
   });
 
   it('should return data array with length 1', () => {
-    return usersModel.findUserProfile(1)
+    return usersModel.findUserProfile(profileId)
       .then(data => {
-        expect(data[0].user_id).toBe(1);
+        expect(data[0].user_id).toBe(profileId);
       })
   });
 
@@ -103,16 +117,16 @@ describe('Find user and send user data', () => {
 describe('Find Local user and Return user and auth data', () => {
 
   it('should return undefined', () => {
-    return usersModel.findLocalUser('notRegisteredUser@user.com')
+    return usersModel.findLocalUser(nonRegisteredEmail)
       .then(data => {
         expect(data[0]).toBeUndefined();
       })
   });
 
   it('should return data array with length 1', () => {
-    return usersModel.findLocalUser('akash@improwised.com')
+    return usersModel.findLocalUser(registeredEmail)
       .then(data => {
-        expect(data[0].user_email).toBe('akash@improwised.com');
+        expect(data[0].user_email).toBe(registeredEmail);
       })
   });
 
@@ -126,7 +140,7 @@ describe('Find Local user and Return user and auth data', () => {
 */
 describe('Find Advertises submitted by user id', () => {
   it('should return data array', () => {
-    return usersModel.findUserAdvertises(10, 10, 1)
+    return usersModel.findUserAdvertises(10, 10, advertiseId)
       .then(data => {
         expect(data).toBeTruthy();
       })
@@ -141,14 +155,14 @@ describe('Find Advertises submitted by user id', () => {
 describe('Find user by id and auth type', () => {
 
   it('should return undefined', () => {
-    return usersModel.findById(456456, 'Local')
+    return usersModel.findById(invaldProfileID)
       .then(data => {
         expect(data[0]).toBeUndefined();
       })
   });
 
   it('should return data array with length 1', () => {
-    return usersModel.findById(1, 'Local')
+    return usersModel.findById(profileId)
       .then(data => {
         expect(data).toHaveLength(1);
       })
@@ -164,7 +178,7 @@ describe('Find user by id and auth type', () => {
 */
 describe('edit existing user details by user id', () => {
   it('should return empty data array on success update', () => {
-    return usersModel.editUser(1, 'testEdit', 'testabc@test.com', 9898076543)
+    return usersModel.editUser(profileId, modifyUser.username, modifyUser.email, modifyUser.phone)
       .then(data => {
         expect(data).toBeTruthy();
       })
@@ -179,7 +193,7 @@ describe('edit existing user details by user id', () => {
 */
 describe('edit existing user local auth password.', () => {
   it('should return empty data array on update', () => {
-    return usersModel.resetPassword(1, 'model@Password')
+    return usersModel.resetPassword(profileId, newPassword)
       .then(data => {
         expect(data).toBeTruthy();
       })
@@ -195,14 +209,14 @@ describe('edit existing user local auth password.', () => {
 describe('check if new users email is already in database ot not.', () => {
 
   it('should return non empty array for existing email', () => {
-    return usersModel.isEmailAvailable('ac.mattis@ultriciesadipiscing.net')
+    return usersModel.isEmailAvailable(oldEmail)
       .then(data => {
         expect(data).toHaveLength(1);
       })
   });
 
   it('should return empty array for new email', () => {
-    return usersModel.isEmailAvailable('model@newEmail.com')
+    return usersModel.isEmailAvailable(newEmail)
       .then(data => {
         expect(data).toHaveLength(0);
       })
@@ -219,6 +233,49 @@ describe('check if new users email is already in database ot not.', () => {
 describe('Check total logged in users advertises.', () => {
   it('should return count data array', () => {
     return usersModel.countUserAdvertise()
+      .then(data => {
+        expect(data).toBeTruthy();
+      })
+  });
+});
+
+/*
+---------------------------------------------------------
+  Users Models: findIdByEmail - find user id by email
+---------------------------------------------------------
+*/
+describe('find user id by email', () => {
+  it('should return data array', () => {
+    return usersModel.findIdByEmail(oldEmail)
+      .then(data => {
+        expect(data).toBeTruthy();
+      })
+  });
+});
+
+/*
+---------------------------------------------------------
+  Users Models: resetEmailEntry - insert new reset password
+  entry to database
+---------------------------------------------------------
+*/
+describe('insert reset password entry to database', () => {
+  it('should return data array', () => {
+    return usersModel.resetEmailEntry(oldEmail, passwordResetToken)
+      .then(data => {
+        expect(data).toBeTruthy();
+      })
+  });
+});
+
+/*
+---------------------------------------------------------
+  Users Models: findByToken - find user by token
+---------------------------------------------------------
+*/
+describe('find user by token', () => {
+  it('should return data array', () => {
+    return usersModel.findByToken(passwordResetToken)
       .then(data => {
         expect(data).toBeTruthy();
       })

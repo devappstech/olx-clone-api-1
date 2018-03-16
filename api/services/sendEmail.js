@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-exports.sendEmailLink = (clientEmail, urlLink) => {
+exports.sendEmailLink = (account, clientEmail, urlLink) => {
   nodemailer.createTestAccount(() => {
        // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
@@ -8,8 +8,8 @@ exports.sendEmailLink = (clientEmail, urlLink) => {
       port: 587,
       secure: false, // true for 465, false for other ports
       auth: {
-        user: 'akash@improwised.com',
-        pass: '**********'
+        user: account.user,
+        pass: account.password
       }
     });
 
@@ -19,10 +19,10 @@ exports.sendEmailLink = (clientEmail, urlLink) => {
       to: clientEmail, // list of receivers
       subject: 'OlxClone - Reset Password', // Subject line
       text: 'Click on Link to Reset Password', // plain text body
-      html: '<b>click on this link:</b>'
+      html: '<b>click on below link to reset your Password:</b>'
         + '<h2><a href=' + urlLink + '>Click Here</a></h2>'
-        + '<br/><br/>'
-        + '<p>Make sure you set new Password with in 3 days from you requested for new Password'// html body
+        + '<br/>'
+        + '<h4>Note:</h4><p>Make sure you set new Password with in 3 days from you requested for new Password</p>'// html body
     };
 
     // send mail with defined transport object
