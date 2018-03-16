@@ -1,20 +1,8 @@
 const advertisesModel = require('../models/advertisesModel');
 const Joi = require('joi');
 const slug = require('slug');
-var multer = require('multer');
-
-const Storage = multer.diskStorage({
-  destination: function(req, file, callback) {
-    callback(null, "public/images");
-  },
-  filename: function(req, file, callback) {
-    callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
-  }
-});
-
-const upload = multer({
-  storage: Storage
-}).array("ad", 4); //Field name and max count
+const multer = require('multer');
+const mkdirp = require('mkdirp');
 
 /* Default Filters */
 const defaultMinPrice = 1;
@@ -111,6 +99,26 @@ exports.createAdvertise = (req, res) => {
 ---------------------------------------------------------
 */
 exports.uploadAdvertiseImages = (req, res) => {
+
+  const id = req.params.id;
+
+  mkdirp("public/images/advertises/" + id, function (err) {
+    if (err) console.error(err)
+  });
+
+  const Storage = multer.diskStorage({
+    destination: function(req, file, callback) {
+      callback(null, "public/images/advertises/" + id);
+    },
+    filename: function(req, file, callback) {
+      callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+    }
+  });
+
+  const upload = multer({
+    storage: Storage
+  }).array("ad", 4); //Field name and max count
+
   upload(req, res, function(err) {
     console.log(err);
     if (err) {
