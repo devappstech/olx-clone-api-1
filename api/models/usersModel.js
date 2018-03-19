@@ -216,6 +216,7 @@ exports.countUserAdvertise = (id) => {
     .from('advertises')
     .field('COUNT(advertise_user_id)', 'count')
     .where('advertise_user_id = ?', id)
+    .where('advertise_stage = ?', 'published')
     .group('advertise_user_id')
     .toParam();
 
