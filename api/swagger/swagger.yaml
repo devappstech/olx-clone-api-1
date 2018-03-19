@@ -205,23 +205,41 @@ paths:
       - "advertises"
       description: "fetch all advertises in descending order of time and date"
       parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: page For Pagination
       - name: limit
         in: query
-        required: true
         schema:
           type: integer
-        description: Limit For Pagination
-      - name: offset
-        in: query
-        required: true
-        schema:
-          type: integer
-        description: Offset For Pagination
+        description: limit For Pagination
       responses:
         '200':
-          description: "Successfully Fetched!"
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
         '404':
-          description: "Not Found!"
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
 
     post:
       tags:
@@ -233,161 +251,30 @@ paths:
           schema:
             $ref: '#/components/schemas/advertises'
       responses:
-        '201':
-          description: created successfully!
-        '404':
-          description: Not Found!
-
-
-  /ads/{id}:
-    get:
-      tags:
-      - "advertises"
-      description: "get single advertise information"
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-        description: id of advertise needed to fetch information
-      responses:
         '200':
-          description: OK
-        '404':
-          description: Not Found
-
-    put:
-      tags:
-      - "advertises"
-      description: to update advertise data by id
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-      requestBody:
-        content:
-          application/json:
+          description: OK!
+          content:
+           application/json:
             schema:
-              $ref: '#/components/schemas/advertises'
-      responses:
-        '200':
-          description: Advertise Updated successfully
+             $ref: '#/components/schemas/201-200response'
         '404':
           description: Not Found
-
-    delete:
-      tags:
-      - "advertises"
-      description: Delete advertise by id
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          description: Deleted Successfully
-        '404':
-          description: Not Found
-
-  /ads/{id}/sells:
-    put:
-      tags:
-      - "advertises"
-      description: set advertise as sold/selling
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-      requestBody:
-        content:
-          application/json:
+          content:
+           application/json:
             schema:
-              $ref: '#/components/schemas/advertise_sold'
-      responses:
-        '200':
-          description: Updated Successfully
-        '404':
-          description: Not Found
-
-  /ads/search/{keyword}:
-    get:
-      tags:
-      - "advertises"
-      description: it is used for search and filter
-      parameters:
-      - name: keyword
-        in: path
-        required: true
-        schema:
-          type: string
-        description: this keyword is required to search in advertises
-      - name: category
-        in: query
-        required: false
-        schema:
-          type: string
-        description: this category is required to search in advertises
-      - name: limit
-        in: query
-        required: true
-        schema:
-          type: integer
-        description: Limit is required for Pagination
-      - name: offset
-        in: query
-        required: true
-        schema:
-          type: integer
-        description: Offset is required for Pagination
-      - name: minprice
-        in: query
-        required: false
-        schema:
-          type: number
-        description: Minumum Price for ranging between prices
-      - name: maxprice
-        in: query
-        required: false
-        schema:
-          type: number
-        description: Maximum Price for ranging between prices
-      - name: Location
-        in: query
-        required: false
-        schema:
-          type: string
-        description: filter based on location
-      responses:
-        '200':
-          description: OK
-        '404':
-          description: Not Found
-
-  /ads/categories/{categoryId}:
-    get:
-      tags:
-      - "advertises"
-      description: it will search advertises in database within categoryId and send result
-      parameters:
-      - name: categoryId
-        in: path
-        required: true
-        schema:
-          type: integer
-        description: category is required to search in advertises
-
-      responses:
-        '200':
-          description: OK
-        '404':
-          description: Not Found
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
 
   /ads/{id}/upload:
     post:
@@ -413,9 +300,287 @@ paths:
                     format: binary
       responses:
         '200':
-          description: successfully uploaded!
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
         '404':
-          description: Not Found!
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/{id}/publish:
+    put:
+      tags:
+      - "advertises"
+      description: pubish advertise by ID if it has uploaded images
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: id of advertise
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/{id}:
+    get:
+      tags:
+      - "advertises"
+      description: "get single advertise information"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: id of advertise needed to fetch information
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+    delete:
+      tags:
+      - "advertises"
+      description: Delete advertise by id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/{id}/sold:
+    put:
+      tags:
+      - "advertises"
+      description: set advertise as sold/selling
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/advertise_sold'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/results/{keyword}:
+    get:
+      tags:
+      - "advertises"
+      description: it is used for search and filter
+      parameters:
+      - name: keyword
+        in: path
+        required: true
+        schema:
+          type: string
+        description: this keyword is required to search in advertises
+      - name: limit
+        in: query
+        schema:
+          type: integer
+        description: Limit is for Pagination
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: page is for Pagination
+      - name: minPrice
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Minumum Price for ranging between prices
+      - name: maxPrice
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Maximum Price for ranging between prices
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/{categoryName}/{keyword}:
+    get:
+      tags:
+      - "advertises"
+      description: it will search advertises in database within categoryId and send result
+      parameters:
+      - name: categoryName
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: category is required to search in advertises
+      - name: keyword
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: keyword is required to search in advertises
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
 
 # Users Path ---------------------------------------
 

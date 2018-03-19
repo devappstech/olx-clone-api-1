@@ -272,6 +272,15 @@ exports.publishAdvertise = (req, res) => {
   show recent advertise according to pagination
 ---------------------------------------------------------
 */
+// exports.markAsSold = () => {
+
+// }
+
+/*
+---------------------------------------------------------
+  show recent advertise according to pagination
+---------------------------------------------------------
+*/
 exports.getRecentAdvertise = (req, res) => {
 
   // Pagination
@@ -446,9 +455,9 @@ exports.searchInCategory = (req, res) => {
 }
 
 /* Modify single Advertises by ID */
-exports.modifySingleAdvertise = (req, res) => {
-  res.status(500).json({ message: 'Error' });
-}
+// exports.modifySingleAdvertise = (req, res) => {
+//   res.status(500).json({ message: 'Error' });
+// }
 
 /* Delete  Advertises by ID */
 exports.deleteSingleAdvertise = (req, res) => {
