@@ -269,12 +269,97 @@ exports.publishAdvertise = (req, res) => {
 
 /*
 ---------------------------------------------------------
-  show recent advertise according to pagination
+  mark item/advertise as sold
 ---------------------------------------------------------
 */
-// exports.markAsSold = () => {
+exports.markAsSold = (req, res) => {
+  const id = parseInt(req.params.id, 0);
+  const userId = parseInt(req.session.passport.user.user_id, 0);
 
-// }
+  const result = Joi.validate({
+    advertiseId: id,
+    userId: userId
+  }, idUserIdValidation);
+
+  if (!result.error){
+    advertisesModel.usersAdvertise(userId, id)
+    .then((data) => {
+
+      if (!data || data.length === 0){
+        res.status(404).json({
+          message: 'Not Found!'
+        });
+      } else {
+        advertisesModel.adMarkAsSold(id)
+        .then(() => {
+          res.status(200).json({
+            message: 'Success'
+          })
+        })
+        .catch(e => res.status(500).json({
+          message: 'Error Occured!',
+          Stack: e
+        }));
+      }
+
+    })
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e
+    }));
+  } else {
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
+  }
+}
+
+/*
+---------------------------------------------------------
+  mark item/advertise as un-sold or back again for sell
+---------------------------------------------------------
+*/
+exports.markAsUnsold = (req, res) => {
+  const id = parseInt(req.params.id, 0);
+  const userId = parseInt(req.session.passport.user.user_id, 0);
+
+  const result = Joi.validate({
+    advertiseId: id,
+    userId: userId
+  }, idUserIdValidation);
+
+  if (!result.error){
+    advertisesModel.usersAdvertise(userId, id)
+    .then((data) => {
+
+      if (!data || data.length === 0){
+        res.status(404).json({
+          message: 'Not Found!'
+        });
+      } else {
+        advertisesModel.adMarkAsUnsold(id)
+        .then(() => {
+          res.status(200).json({
+            message: 'Success'
+          })
+        })
+        .catch(e => res.status(500).json({
+          message: 'Error Occured!',
+          Stack: e
+        }));
+      }
+
+    })
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e
+    }));
+  } else {
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
+  }
+}
 
 /*
 ---------------------------------------------------------
@@ -419,24 +504,10 @@ exports.searchAll = (req, res) => {
         message: 'Not Found!'
       });
     } else {
-      const filteredData = data.filter((item) => {
-        const condition = req.query.condition;
-        const city = req.query.city;
-        if (condition || city){
-          if (item.advertise_condition === condition || item.city_name === city){
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          return data;
-        }
-
-      })
       res.status(200).json({
         message: 'Success',
-        length: filteredData.length,
-        data: filteredData
+        length: data.length,
+        data: data
       });
     }
   })

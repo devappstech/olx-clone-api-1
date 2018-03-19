@@ -46,8 +46,6 @@ exports.usersAdvertise = (userId, advertiseId) => {
   .where('advertises.advertise_id = ?', advertiseId)
   .toParam();
 
-  console.log(usersAdvertiseQuery);
-
   return database.executeQuery(usersAdvertiseQuery);
 }
 
@@ -64,8 +62,6 @@ exports.insertImages = (advertiseId, imagePath) => {
   .set('image_advertise_id', advertiseId)
   .set('image_path', imagePath)
   .toParam();
-
-  console.log(insertImagesQuery);
 
   return database.executeQuery(insertImagesQuery);
 }
@@ -84,9 +80,43 @@ exports.updateStage = (advertiseId, stage) => {
   .where('advertise_id = ?', advertiseId)
   .toParam();
 
-  console.log(updateStageQuery);
-
   return database.executeQuery(updateStageQuery);
+}
+
+
+/*
+---------------------------------------------------------
+  Advertise Models: mark Advertise as Sold
+---------------------------------------------------------
+*/
+
+exports.adMarkAsSold = (advertiseId) => {
+  const adMarkAsSold = database.queryBuilder
+  .update()
+  .table('advertises')
+  .set('advertise_sold', true)
+  .where('advertise_id = ?', advertiseId)
+  .toParam();
+
+  return database.executeQuery(adMarkAsSold);
+}
+
+/*
+---------------------------------------------------------
+  Advertise Models: mark Advertise as unsold or continue
+  selling
+---------------------------------------------------------
+*/
+
+exports.adMarkAsUnsold = (advertiseId) => {
+  const adMarkAsUnsold = database.queryBuilder
+  .update()
+  .table('advertises')
+  .set('advertise_sold', false)
+  .where('advertise_id = ?', advertiseId)
+  .toParam();
+
+  return database.executeQuery(adMarkAsUnsold);
 }
 
 /*
