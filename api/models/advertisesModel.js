@@ -271,6 +271,58 @@ exports.searchResult = (limit, offset, searchKeyword, minPrice, maxPrice) => {
   return database.executeQuery(QuerySearchResult);
 }
 
+/*
+---------------------------------------------------------
+  Advertise Models: categorySearchResult - search
+  advertises in all specific category
+---------------------------------------------------------
+*/
+exports.categorySearchResult = (limit, offset, categoryName, searchKeyword, minPrice, maxPrice) => {
+
+  const QuerySearchResult = database.queryBuilder
+  .select()
+  .from('advertises')
+  .field('advertises.advertise_id')
+  .field('advertises.advertise_title')
+  .field('advertises.advertise_description')
+  .field('advertises.advertise_price')
+  .field('advertises.advertise_condition')
+  .field('advertises.advertise_timestamp')
+  .field('cities.city_name')
+  .field('states.state_name')
+  .field(database.queryBuilder.str('json_agg(images.image_path)'), 'images')
+  .field('categories.category_name')
+  .field('users.user_name')
+  .field('users.user_phone')
+  .field('users.user_id')
+  .field('users.user_email')
+  .field('advertises.advertise_sold')
+  .join('users', null, 'advertises.advertise_user_id = users.user_id')
+  .join('cities', null, 'advertises.advertise_city_id = cities.city_id')
+  .join('states', null, 'cities.city_state_id = states.state_id')
+  .join('categories', null, 'categories.category_id = advertises.advertise_category_id')
+  .join('images', null, 'images.image_advertise_id = advertises.advertise_id')
+  .where(database.queryBuilder.expr()
+    .and('advertise_title ilike ?', '%' + searchKeyword + '%')
+    .or('advertise_description ilike ?', '%' + searchKeyword + '%'))
+  .where('advertise_price >= ?', minPrice)
+  .where('advertise_price <= ?', maxPrice)
+  .where('advertise_stage = ?', 'published')
+  .where('advertise_sold = ?', false)
+  .where('categories.category_name = ?', categoryName)
+  .group('advertises.advertise_id')
+  .group('cities.city_id')
+  .group('states.state_id')
+  .group('categories.category_id')
+  .group('users.user_id')
+  .order('advertise_timestamp', false)
+  .limit(limit)
+  .offset(offset)
+  .toParam();
+
+  return database.executeQuery(QuerySearchResult);
+}
+
 exports.deleteAdvertise = (id, userId) => {
   const deleteAdvertiseQuery = database.queryBuilder
   .delete()

@@ -522,7 +522,46 @@ exports.searchAll = (req, res) => {
 ---------------------------------------------------------
 */
 exports.searchInCategory = (req, res) => {
-  res.status(500).json({ message: 'Error' });
+  // Pagination
+  let page = parseInt(req.query.page, 0);
+  if (isNaN(page) || page < 1) {
+    page = 1;
+  }
+
+  let limit = parseInt(req.query.limit, 0);
+  if (isNaN(limit)) {
+    limit = 10;
+  } else if (limit < 1) {
+    limit = 1;
+  }
+
+  let offset = (page - 1) * limit;
+
+  const term = slug(req.params.term, ' ');
+  const category = slug(req.params.categorName)
+
+  const filterArray = [
+    parseInt(req.query.minPrice, 0) || defaultMinPrice,
+    parseInt(req.query.maxPrice, 0) || defaultMaxPrice
+  ]
+
+  advertisesModel.categorySearchResult(limit, offset, category, term, ...filterArray)
+  .then((data) => {
+    if (!data || data.length <= 0){
+      res.status(404).json({
+        message: 'Not Found!'
+      });
+    } else {
+      res.status(200).json({
+        message: 'Success',
+        length: data.length,
+        data: data
+      });
+    }
+  })
+  .catch(e => res.status(500).json({
+    message: 'Error Occured!', Stack: e
+  }));
 }
 
 /* Modify single Advertises by ID */

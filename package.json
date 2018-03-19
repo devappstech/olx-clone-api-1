@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "lint": "ESLINT_ARGS='--quiet' make lint",
-    "test": "NODE_ENV=test jest --forceExit"
+    "test": "NODE_ENV=test jest -u --forceExit"
   },
   "dependencies": {
     "bcrypt": "^1.0.3",

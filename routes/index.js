@@ -31,7 +31,7 @@ router.delete('/ads/:id', isAuthTrue.isAuth, advertiseController.deleteSingleAdv
 router.put('/ads/:id/sold', isAuthTrue.isAuth, advertiseController.markAsSold);
 router.put('/ads/:id/sell', isAuthTrue.isAuth, advertiseController.markAsUnsold);
 router.get('/ads/results/:term', advertiseController.searchAll);
-//router.get('/ads/:categorName/:term', advertiseController.searchInCategory);
+router.get('/ads/:categorName/:term', advertiseController.searchInCategory);
 
 /* Categories Controller Functions */
 router.get('/categories', categoriesController.readAll);
