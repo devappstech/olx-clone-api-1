@@ -14,6 +14,7 @@ const validateId = Joi.object().keys({
   .required()
 })
 
+// schema for new advertise
 const newAdvertiseValidation = Joi.object().keys({
   advertiseUserId: Joi.number().integer().required(),
   advertiseTitle: Joi.string().required(),
@@ -25,6 +26,12 @@ const newAdvertiseValidation = Joi.object().keys({
   advertiseLong: Joi.number(),
   advertiseCityId: Joi.number().integer().required()
 }).with('advertiseLat', 'advertiseLong');
+
+// id and userid of advertise validation
+const idUserIdValidation = Joi.object().keys({
+  advertiseId: Joi.number().integer().required(),
+  userId: Joi.number().integer().required()
+})
 
 /*
 ---------------------------------------------------------
@@ -100,34 +107,165 @@ exports.createAdvertise = (req, res) => {
 */
 exports.uploadAdvertiseImages = (req, res) => {
 
-  const id = req.params.id;
+  const id = parseInt(req.params.id, 0);
+  const userId = parseInt(req.session.passport.user.user_id, 0);
+  const stage = 'stage2';
 
-  mkdirp("public/images/advertises/" + id, function (err) {
-    if (err) console.error(err)
-  });
+  const result = Joi.validate({
+    advertiseId: id,
+    userId: userId
+  }, idUserIdValidation);
 
-  const Storage = multer.diskStorage({
-    destination: function(req, file, callback) {
-      callback(null, "public/images/advertises/" + id);
-    },
-    filename: function(req, file, callback) {
-      callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
-    }
-  });
+  if (!result.error){
+    // some predefine constants
+    const imagePath = "public/images/advertises/" + id + '/';
+    const imagesName = [];
 
-  const upload = multer({
-    storage: Storage
-  }).array("ad", 4); //Field name and max count
+    // validate user associated with advertise or not
+    advertisesModel.usersAdvertise(userId, id)
+    .then((data) => {
 
-  upload(req, res, function(err) {
-    console.log(err);
-    if (err) {
-      return res.send("Something went wrong!");
-    }
-    return res.send("File uploaded sucessfully!.");
-  });
+      if (!data || data.length === 0){
+        res.status(404).json({
+          message: 'Not Found!'
+        });
+
+      } else {
+
+        mkdirp(imagePath, function (err) {
+          if (err) console.error(err)
+        });
+
+        // Multer Storage
+        const Storage = multer.diskStorage({
+          destination: function(req, file, callback) {
+            callback(null, imagePath);
+          },
+          filename: function (req, file, cb) {
+            let extension;
+            // Mimetype stores the file type, set extensions according to filetype
+            switch (file.mimetype) {
+              case 'image/jpeg':
+                extension = '.jpeg';
+                break;
+              case 'image/png':
+                extension = '.png';
+                break;
+              case 'image/gif':
+                extension = '.gif';
+                break;
+              default:
+                break;
+            }
+
+            cb(null, file.originalname.slice(0, 4) + Date.now() + extension);
+            imagesName.push(file.originalname.slice(0, 4) + Date.now() + extension);
+          }
+        });
+
+        // Multer Uploader
+        const upload = multer({
+          storage: Storage
+        }).array("images", 4); //Field name and max count
+
+        // On upload Function
+        upload(req, res, function(err) {
+          if (err) {
+            res.status(500).json({
+              message: 'Error Occured!',
+              Stack: err
+            });
+          } else {
+
+            const insertImagesArray = imagesName.map((item) => {
+              let fullImagePath = imagePath + item;
+              return advertisesModel.insertImages(id, fullImagePath)
+            })
+
+            Promise.all(insertImagesArray)
+            .then(() => {
+
+              advertisesModel.updateStage(id, stage)
+              .then(() => {
+                res.status(200).json({
+                  message: 'Success'
+                })
+              })
+              .catch(e => res.status(500).json({
+                message: 'Error Occured!',
+                Stack: e
+              }));
+
+            })
+            .catch(e => res.status(500).json({
+              message: 'Error Occured!',
+              Stack: e
+            }));
+          }
+
+        })
+
+      }
+    })
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e
+    }));
+  } else {
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
+  }
 }
 
+/*
+---------------------------------------------------------
+  publish advertise from stage2 to publish
+---------------------------------------------------------
+*/
+exports.publishAdvertise = (req, res) => {
+  const id = parseInt(req.params.id, 0);
+  const userId = parseInt(req.session.passport.user.user_id, 0);
+  const stage = 'published';
+
+  const result = Joi.validate({
+    advertiseId: id,
+    userId: userId
+  }, idUserIdValidation);
+
+  if (!result.error){
+    advertisesModel.usersAdvertise(userId, id)
+    .then((data) => {
+
+      if (!data || data.length === 0){
+        res.status(404).json({
+          message: 'Not Found!'
+        });
+      } else {
+        advertisesModel.updateStage(id, stage)
+        .then(() => {
+          res.status(200).json({
+            message: 'Success'
+          })
+        })
+        .catch(e => res.status(500).json({
+          message: 'Error Occured!',
+          Stack: e
+        }));
+      }
+
+    })
+    .catch(e => res.status(500).json({
+      message: 'Error Occured!',
+      Stack: e
+    }));
+  } else {
+    res.status(400).json({
+      message: 'Invalid Data!'
+    });
+  }
+
+}
 
 /*
 ---------------------------------------------------------
@@ -180,8 +318,7 @@ exports.getRecentAdvertise = (req, res) => {
     Stack: e.stack
   }));
 
-  Promise.all([recentAdvertise, advertiseCount]).then((values) => {
-    console.log(values);
+  Promise.all([recentAdvertise, advertiseCount]).then(() => {
     res.status(200).json({
       message: 'Success',
       metadata: {
@@ -307,11 +444,6 @@ exports.searchAll = (req, res) => {
 exports.searchInCategory = (req, res) => {
   res.status(500).json({ message: 'Error' });
 }
-
-/* Create new Advertises */
-// exports.createAdvertise = (req, res) => {
-//   res.status(500).json({ message: 'Error' });
-// }
 
 /* Modify single Advertises by ID */
 exports.modifySingleAdvertise = (req, res) => {

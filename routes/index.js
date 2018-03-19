@@ -22,9 +22,10 @@ const validateLink = require('../api/middlewares/validateLink');
 
 /* Adverties Controller Functions */
 router.get('/ads', advertiseController.getRecentAdvertise);
-router.post('/ads', isAuthTrue.isAuth, advertiseController.createAdvertise);
-router.post('/ads/:id/upload', advertiseController.uploadAdvertiseImages);
 
+router.post('/ads', isAuthTrue.isAuth, advertiseController.createAdvertise); //stage1
+router.post('/ads/:id/upload', isAuthTrue.isAuth, advertiseController.uploadAdvertiseImages); //stage2
+router.put('/ads/:id/publish', isAuthTrue.isAuth, advertiseController.publishAdvertise); //published
 router.get('/ads/:id', advertiseController.getSingleAdvertise);
 router.put('/ads/:id', advertiseController.modifySingleAdvertise);
 router.delete('/ads/:id', isAuthTrue.isAuth, advertiseController.deleteSingleAdvertise);

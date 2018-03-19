@@ -28,6 +28,66 @@ exports.createAdvertise = (userId, title, description, price, condition, categor
   return database.executeQuery(createAdvertiseQuery);
 }
 
+/*
+---------------------------------------------------------
+  Advertise Models: fetch advertise_id correspond with
+  user id
+---------------------------------------------------------
+*/
+
+exports.usersAdvertise = (userId, advertiseId) => {
+  const usersAdvertiseQuery = database.queryBuilder
+  .select()
+  .from('advertises')
+  .field('advertises.advertise_id')
+  .field('users.user_id')
+  .join('users', null, 'users.user_id = advertises.advertise_user_id')
+  .where('users.user_id = ?', userId)
+  .where('advertises.advertise_id = ?', advertiseId)
+  .toParam();
+
+  console.log(usersAdvertiseQuery);
+
+  return database.executeQuery(usersAdvertiseQuery);
+}
+
+/*
+---------------------------------------------------------
+  Advertise Models: insert images into database
+---------------------------------------------------------
+*/
+
+exports.insertImages = (advertiseId, imagePath) => {
+  const insertImagesQuery = database.queryBuilder
+  .insert()
+  .into('images')
+  .set('image_advertise_id', advertiseId)
+  .set('image_path', imagePath)
+  .toParam();
+
+  console.log(insertImagesQuery);
+
+  return database.executeQuery(insertImagesQuery);
+}
+
+/*
+---------------------------------------------------------
+  Advertise Models: update Advertise Stage
+---------------------------------------------------------
+*/
+
+exports.updateStage = (advertiseId, stage) => {
+  const updateStageQuery = database.queryBuilder
+  .update()
+  .table('advertises')
+  .set('advertise_stage', stage)
+  .where('advertise_id = ?', advertiseId)
+  .toParam();
+
+  console.log(updateStageQuery);
+
+  return database.executeQuery(updateStageQuery);
+}
 
 /*
 ---------------------------------------------------------
@@ -48,19 +108,29 @@ exports.recentAds = (limit, offset) => {
   .field('advertises.advertise_timestamp')
   .field('cities.city_name')
   .field('states.state_name')
-  .field('images.image_path')
+  .field(database.queryBuilder.str('json_agg(images.image_path)'), 'images')
   .field('categories.category_name')
   .field('users.user_name')
   .field('users.user_phone')
+  .field('users.user_id')
+  .field('users.user_email')
   .join('users', null, 'advertises.advertise_user_id = users.user_id')
   .join('cities', null, 'advertises.advertise_city_id = cities.city_id')
   .join('states', null, 'cities.city_state_id = states.state_id')
   .join('categories', null, 'categories.category_id = advertises.advertise_category_id')
   .join('images', null, 'images.image_advertise_id = advertises.advertise_id')
+  .where('advertise_stage = ?', 'published')
+  .group('advertises.advertise_id')
+  .group('cities.city_id')
+  .group('states.state_id')
+  .group('categories.category_id')
+  .group('users.user_id')
   .order('advertise_timestamp', false)
   .limit(limit)
   .offset(offset)
   .toParam();
+
+  console.log(QueryRecentAds);
 
   return database.executeQuery(QueryRecentAds);
 }
@@ -70,6 +140,7 @@ exports.countRecords = () => {
   .select()
   .from('advertises')
   .field('count(advertise_id)', 'count')
+  .where('advertise_stage = ?', 'published')
   .toParam();
 
   return database.executeQuery(countQueryRecentAds);
@@ -93,16 +164,24 @@ exports.singleAd = (advertiseID) => {
   .field('advertises.advertise_timestamp')
   .field('cities.city_name')
   .field('states.state_name')
-  .field('images.image_path')
+  .field(database.queryBuilder.str('json_agg(images.image_path)'), 'images')
   .field('categories.category_name')
   .field('users.user_name')
   .field('users.user_phone')
+  .field('users.user_id')
+  .field('users.user_email')
   .join('users', null, 'advertises.advertise_user_id = users.user_id')
   .join('cities', null, 'advertises.advertise_city_id = cities.city_id')
   .join('states', null, 'cities.city_state_id = states.state_id')
   .join('categories', null, 'categories.category_id = advertises.advertise_category_id')
-  .left_join('images', null, 'images.image_advertise_id = advertises.advertise_id')
+  .join('images', null, 'images.image_advertise_id = advertises.advertise_id')
   .where('advertises.advertise_id = ?', advertiseID)
+  .where('advertise_stage = ?', 'published')
+  .group('advertises.advertise_id')
+  .group('cities.city_id')
+  .group('states.state_id')
+  .group('categories.category_id')
+  .group('users.user_id')
   .toParam();
 
   return database.executeQuery(QuerySingleAds);
@@ -126,10 +205,12 @@ exports.searchResult = (limit, offset, searchKeyword, minPrice, maxPrice) => {
   .field('advertises.advertise_timestamp')
   .field('cities.city_name')
   .field('states.state_name')
-  .field('images.image_path')
+  .field(database.queryBuilder.str('json_agg(images.image_path)'), 'images')
   .field('categories.category_name')
   .field('users.user_name')
   .field('users.user_phone')
+  .field('users.user_id')
+  .field('users.user_email')
   .join('users', null, 'advertises.advertise_user_id = users.user_id')
   .join('cities', null, 'advertises.advertise_city_id = cities.city_id')
   .join('states', null, 'cities.city_state_id = states.state_id')
@@ -140,6 +221,12 @@ exports.searchResult = (limit, offset, searchKeyword, minPrice, maxPrice) => {
     .or('advertise_description ilike ?', '%' + searchKeyword + '%'))
   .where('advertise_price >= ?', minPrice)
   .where('advertise_price <= ?', maxPrice)
+  .where('advertise_stage = ?', 'published')
+  .group('advertises.advertise_id')
+  .group('cities.city_id')
+  .group('states.state_id')
+  .group('categories.category_id')
+  .group('users.user_id')
   .order('advertise_timestamp', false)
   .limit(limit)
   .offset(offset)
