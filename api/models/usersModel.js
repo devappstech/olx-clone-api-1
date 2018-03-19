@@ -128,6 +128,7 @@ exports.findUserAdvertises = (limit, offset, id) => {
     .field('users.user_phone')
     .field('users.user_id')
     .field('users.user_email')
+    .field('advertises.advertise_sold')
     .join('users', null, 'advertises.advertise_user_id = users.user_id')
     .join('cities', null, 'advertises.advertise_city_id = cities.city_id')
     .join('states', null, 'cities.city_state_id = states.state_id')
