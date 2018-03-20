@@ -13,6 +13,7 @@ const usersStream = fs.createReadStream("./csv/users.csv");
 const authStream = fs.createReadStream("./csv/auth.csv");
 const advertisesStream = fs.createReadStream("./csv/advertises.csv");
 const imagesStream = fs.createReadStream('./csv/images.csv');
+const resetPasswordStream = fs.createReadStream('./csv/reset_password.csv');
 
 /*
 -----------------------------------------------
@@ -142,7 +143,8 @@ exports.parseAdvertises = () => {
         advertiseLongitude: data.advertise_longitude,
         advertiseTimestamp: data.advertise_timestamp,
         advertiseSold: data.advertise_sold,
-        advertiseCityId: data.advertise_city_id
+        advertiseCityId: data.advertise_city_id,
+        advertiseStage: data.advertise_stage
       })
     })
     .on("end", function(){
@@ -165,6 +167,30 @@ exports.parseImages = () => {
       parsedArray.push({
         imagePath: data.image_path,
         imageAdvertiseId: data.image_advertise_id
+      })
+    })
+    .on("end", function(){
+      resolve(parsedArray);
+    });
+  })
+};
+
+/*
+-----------------------------------------------
+  Parse reset_password Csv
+-----------------------------------------------
+*/
+exports.parseResetPassword = () => {
+  const parsedArray = [];
+  return new Promise((resolve) => {
+    csv
+    .fromStream(resetPasswordStream, { headers: true })
+    .on("data", (data) => {
+      parsedArray.push({
+        resetId: data.reset_id,
+        resetUserEmail: data.reset_user_email,
+        resetToken: data.reset_token,
+        resetTimestamp: data.reset_timestamp
       })
     })
     .on("end", function(){

@@ -69,3 +69,13 @@ test(`Should Parse Images CSV`, () => {
   expect.assertions(1);
   return expect(parser.parseImages()).resolves.toMatchSnapshot();
 });
+
+/*
+--------------------------------------------------------
+Should Parse Reset Password  CSV
+--------------------------------------------------------
+*/
+test(`Should Parse reset_password CSV`, () => {
+  expect.assertions(1);
+  return expect(parser.parseResetPassword()).resolves.toMatchSnapshot();
+});

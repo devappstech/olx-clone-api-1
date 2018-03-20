@@ -69,3 +69,14 @@ test(`Should Seed Data from Images CSV to Database`, () => {
   expect.assertions(1);
   return expect(seed.insertImages()).resolves.toMatchSnapshot();
 });
+
+/*
+--------------------------------------------------------
+Should import reset_password CSV Data to Database
+--------------------------------------------------------
+*/
+test(`Should Seed Data from reset_password CSV to Database`, () => {
+  expect.assertions(1);
+  return expect(seed.insertResetPassword()).resolves.toMatchSnapshot();
+});
+
