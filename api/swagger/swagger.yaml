@@ -15,6 +15,10 @@ info:
   license:
     name: MIT
     url: 'http://opensource.org/licenses/MIT'
+security:
+  - cookieAuth: []
+  # currently not supported:
+  #https://stackoverflow.com/questions/49272171/sending-cookie-session-id-with-swagger-3-0
 
 # Tags name Define here
 tags:
@@ -478,6 +482,48 @@ paths:
             schema:
              $ref: '#/components/schemas/400response'
 
+  /ads/{id}/sell:
+    put:
+      tags:
+      - "advertises"
+      description: set advertise as back in stock/countinue selling Or selling again
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/advertise_sold'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
   /ads/results/{keyword}:
     get:
       tags:
@@ -666,6 +712,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/userLogin'
+      security: []    # no authentication
       responses:
         '200':
           description: OK!
@@ -673,6 +720,11 @@ paths:
            application/json:
             schema:
              $ref: '#/components/schemas/200LoginResponse'
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: connect.sid=abcde12345; Path=/; HttpOnly
         '404':
           description: Not Found
           content:
@@ -1087,6 +1139,11 @@ paths:
              $ref: '#/components/schemas/400response'
 
 components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: connect.sid  # cookie name
   schemas:
     state:
       required:
@@ -1155,8 +1212,8 @@ components:
         - price
         - condition
         - categoryId
-        - latitude
-        - longitude
+        - lat
+        - long
         - cityId
       properties:
         userId:
