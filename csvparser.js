@@ -1,5 +1,7 @@
 const fs = require('fs');
 const csv = require('fast-csv');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 /*
 -----------------------------------------------
@@ -109,11 +111,19 @@ exports.parseAuth = () => {
     csv
     .fromStream(authStream, { headers: true })
     .on("data", (data) => {
-      parsedArray.push({
-        authUserId: data.auth_user_id,
-        authType: data.auth_type,
-        authPassword: data.auth_password
-      })
+      if (data.auth_password) {
+        parsedArray.push({
+          authUserId: data.auth_user_id,
+          authType: data.auth_type,
+          authPassword: bcrypt.hashSync(data.auth_password, saltRounds)
+        })
+      } else {
+        parsedArray.push({
+          authUserId: data.auth_user_id,
+          authType: data.auth_type,
+          authPassword: data.auth_password
+        })
+      }
     })
     .on("end", function(){
       resolve(parsedArray);
