@@ -1,6 +1,5 @@
 const database = require('../../database/database');
 
-
 /*
 ---------------------------------------------------------
   Advertise Models: createAdvertise - create partial
@@ -161,8 +160,6 @@ exports.recentAds = (limit, offset) => {
   .limit(limit)
   .offset(offset)
   .toParam();
-
-  console.log(QueryRecentAds);
 
   return database.executeQuery(QueryRecentAds);
 }
