@@ -8,14 +8,34 @@ const saltRounds = 10;
   File System Read Stream for Each Csv
 -----------------------------------------------
 */
-const statesStream = fs.createReadStream("./csv/states.csv");
-const citiesStream = fs.createReadStream("./csv/cities.csv");
-const categoriesStream = fs.createReadStream("./csv/categories.csv");
-const usersStream = fs.createReadStream("./csv/users.csv");
-const authStream = fs.createReadStream("./csv/auth.csv");
-const advertisesStream = fs.createReadStream("./csv/advertises.csv");
-const imagesStream = fs.createReadStream('./csv/images.csv');
-const resetPasswordStream = fs.createReadStream('./csv/reset_password.csv');
+let statesStream;
+let citiesStream;
+let categoriesStream;
+let usersStream;
+let authStream;
+let advertisesStream;
+let imagesStream;
+let resetPasswordStream;
+
+if (process.env.NODE_ENV !== 'test'){
+  statesStream = fs.createReadStream("./csv/states.csv");
+  citiesStream = fs.createReadStream("./csv/cities.csv");
+  categoriesStream = fs.createReadStream("./csv/categories.csv");
+  usersStream = fs.createReadStream("./csv/users.csv");
+  authStream = fs.createReadStream("./csv/auth.csv");
+  advertisesStream = fs.createReadStream("./csv/advertises.csv");
+  imagesStream = fs.createReadStream('./csv/images.csv');
+  resetPasswordStream = fs.createReadStream('./csv/reset_password.csv');
+} else {
+  statesStream = fs.createReadStream("./csv/testcsv/states.csv");
+  citiesStream = fs.createReadStream("./csv/testcsv/cities.csv");
+  categoriesStream = fs.createReadStream("./csv/testcsv/categories.csv");
+  usersStream = fs.createReadStream("./csv/testcsv/users.csv");
+  authStream = fs.createReadStream("./csv/testcsv/auth.csv");
+  advertisesStream = fs.createReadStream("./csv/testcsv/advertises.csv");
+  imagesStream = fs.createReadStream('./csv/testcsv/images.csv');
+  resetPasswordStream = fs.createReadStream('./csv/testcsv/reset_password.csv');
+}
 
 /*
 -----------------------------------------------
