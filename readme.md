@@ -16,3 +16,7 @@
 ```
 - npm run seeder
 ```
+5. run test-cases
+```
+- npm test
+```

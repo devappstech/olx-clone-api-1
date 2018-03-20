@@ -7,7 +7,7 @@
     "lint": "ESLINT_ARGS='--quiet' make lint",
     "migration": "./migrate.sh",
     "seeder": "node import.js",
-    "test": "NODE_ENV=test jest -u --forceExit"
+    "test": "./test_in_sequence.sh"
   },
   "dependencies": {
     "bcrypt": "^1.0.3",
