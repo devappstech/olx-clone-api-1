@@ -118,7 +118,7 @@ exports.uploadAdvertiseImages = (req, res) => {
 
   if (!result.error){
     // some predefine constants
-    const imagePath = "public/images/advertises/" + id + '/';
+    const imagePath = "images/advertises/" + id + '/';
     const imagesName = [];
 
     // validate user associated with advertise or not
