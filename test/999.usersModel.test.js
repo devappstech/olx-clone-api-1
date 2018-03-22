@@ -4,13 +4,13 @@ const usersModel = require('../api/models/usersModel');
 Constant Variables for Testcases
 */
 const oldUser = {
-  username: 'test',
-  email: 'r@r.com',
+  username: 'akash',
+  email: 'akash@improwised.com',
   phone: 1234567890
 };
 const newUser = {
-  username: 'test1',
-  email: 'testmeagain11@test.com',
+  username: 'uniqueOne',
+  email: 'UniqueOne@improwised.com',
   phone: 1234567890
 };
 const oldUserAuth = {
@@ -18,12 +18,12 @@ const oldUserAuth = {
   password: '123456789'
 };
 const newUserAuth = {
-  id: 110,
+  id: 3,
   password: 'secertAdmin'
 };
 const modifyUser = {
-  username: 'user name updated',
-  email: 'usernew@gmail.com',
+  username: 'akash updated',
+  email: 'akash@improwised.com',
   phone: 1234567890
 }
 const oldEmail = 'akash@improwised.com';

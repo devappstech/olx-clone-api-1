@@ -8,14 +8,14 @@ Constant Variables for Testcases
 */
 const registerNewUser = {
   username: 'test',
-  email: 'akash1@improwised.com',
+  email: 'uniqueEmailEveryTime@improwised.com',
   password: '123456789',
   phone: '7897897890'
 }
 
 const loginExistingUser = {
-  email: 'akash1@improwised.com',
-  password: '123456789'
+  email: 'akash@improwised.com',
+  password: 'testpassword'
 }
 
 const profileId = 1;
@@ -24,20 +24,20 @@ const advertiseId = 1;
 
 const modifyUserDetails = {
   username: 'akash updated',
-  email: 'akash1@improwised.com',
+  email: 'akash@improwised.com',
   phone: '1234567890'
 }
 
 const newPassword = {
-  password: '123456789'
+  password: 'testpassword'
 }
 
 const newEmail = {
-  email: 'newEmail1233@gmail.com'
+  email: 'differentNewEmail@gmail.com'
 }
 
 const ExistingEmail = {
-  email: 'akash1@improwised.com'
+  email: 'akash@improwised.com'
 }
 
 const passwordResetToken = 'e5984a7d-b305-418c-a14b-d8466cbf1290';

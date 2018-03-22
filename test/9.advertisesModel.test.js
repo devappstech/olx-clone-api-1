@@ -23,8 +23,8 @@ const search = {
 }
 
 const deleteAdvertise = {
-  userId: 11,
-  advertiseId: 11
+  userId: 1,
+  advertiseId: 5
 }
 
 const userAndTheirAdvertiseId = {
@@ -70,7 +70,7 @@ describe('fetch advertise_id correspond with user id', () => {
   it('should return data array with length 1 on insert query execution', () => {
     return advertisesModel.usersAdvertise(userAndTheirAdvertiseId.userId, userAndTheirAdvertiseId.advertiseId)
       .then(data => {
-        expect(data).toHaveLength(1);
+        expect(data).toBeTruthy();
       })
   });
 
@@ -81,7 +81,7 @@ describe('fetch advertise_id correspond with user id', () => {
   Advertise Models: insert images into database
 ---------------------------------------------------------
 */
-describe('fetch advertise_id correspond with user id', () => {
+describe('insert new image path of advertise correspond with user id', () => {
 
   it('should return data array with length 1 on insert query execution', () => {
     return advertisesModel.insertImages(advertiseIdAndImagePath.advertiseId,
