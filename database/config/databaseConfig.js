@@ -17,3 +17,13 @@ exports.testDatabase = {
   idleTimeoutMillis: 500,
   connectionTimeoutMillis: 1000
 }
+
+exports.dockerContainer = {
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDOCKERDB,
+  password: process.env.PGPASSWORD,
+  port: process.env.PGPORT,
+  idleTimeoutMillis: 500,
+  connectionTimeoutMillis: 1000
+}

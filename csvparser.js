@@ -1,6 +1,6 @@
 const fs = require('fs');
 const csv = require('fast-csv');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 
 /*

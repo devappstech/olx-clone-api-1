@@ -1,0 +1,46 @@
+version: '2'
+services:
+
+  postgres:
+     image: postgres:9.5
+     restart: unless-stopped
+     environment:
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: 123456
+     ports:
+       - "5432:5432"
+     volumes:
+       - ./postgres_data:/var/lib/postgresql/data
+       - ./dump:/docker-entrypoint-initdb.d%
+
+  app:
+    build:
+      context: .
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      PORT: 3000
+      PGHOST: postgres
+      PGUSER: postgres
+      PGPASSWORD: 123456
+      PGPORT: 5432
+      PGDOCKERDB: postgres
+      sessionSecert: someVerySecertK3yThatNoBodyKnow$Actually
+      BASE_URL: http://localhost
+      emailUser: akash@improwised.com
+      emailPassword: corona550
+    ports:
+      - "3000:3000"
+    links:
+      - postgres
+
+  nginx:
+    build:
+      context: ./nginx/
+    image: nginx
+    restart: always
+    build: ./nginx/
+    ports:
+      - "80:80"
+    links:
+      - app

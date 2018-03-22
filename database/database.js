@@ -2,6 +2,9 @@ const squel = require('squel').useFlavour('postgres');
 const { Pool } = require('pg');
 const config = require('./config/databaseConfig');
 
+/* pool instance */
+let pool;
+
 if (process.env.NODE_ENV === 'test'){
   // eslint-disable-next-line
   const dotenv = require('dotenv').config();
@@ -9,6 +12,11 @@ if (process.env.NODE_ENV === 'test'){
   if (dotenv.error) {
     throw dotenv.error;
   }
+  pool = new Pool(config.testDatabase);
+} else if (process.env.APP_ENV === 'production'){
+  pool = new Pool(config.dockerContainer);
+} else {
+  pool = new Pool(config.productionDatabase);
 }
 
 /*
@@ -22,17 +30,6 @@ squel.cls.DefaultQueryBuilderOptions.autoQuoteAliasNames = true;
 squel.cls.DefaultQueryBuilderOptions.nameQuoteCharacter = '"';
 squel.cls.DefaultQueryBuilderOptions.tableAliasQuoteCharacter = '"';
 squel.cls.DefaultQueryBuilderOptions.fieldAliasQuoteCharacter = '"';
-
-/* pool instance */
-let pool;
-
-// Pg Pool instance Defined According to NODE_ENV
-if (process.env.NODE_ENV === 'test'){
-  pool = new Pool(config.testDatabase);
-} else {
-  pool = new Pool(config.productionDatabase);
-}
-
 
 /*
 -----------------------------------------------
