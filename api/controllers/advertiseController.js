@@ -117,9 +117,12 @@ exports.uploadAdvertiseImages = (req, res) => {
   }, idUserIdValidation);
 
   if (!result.error){
-    // some predefine constants
-    const imagePath = "images/advertises/" + id + '/';
+    // some predefine constants for multer and mkdirp
+    const imagePath = "public/images/advertises/" + id + '/';
     const imagesName = [];
+
+    // for insert path into db
+    const dbImagePath = "images/advertises/" + id + '/';
 
     // validate user associated with advertise or not
     advertisesModel.usersAdvertise(userId, id)
@@ -178,7 +181,7 @@ exports.uploadAdvertiseImages = (req, res) => {
           } else {
 
             const insertImagesArray = imagesName.map((item) => {
-              let fullImagePath = imagePath + item;
+              let fullImagePath = dbImagePath + item;
               return advertisesModel.insertImages(id, fullImagePath)
             })
 
