@@ -1,6 +1,6 @@
 const fs = require('fs');
 const csv = require('fast-csv');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 
 /*
@@ -17,7 +17,7 @@ let advertisesStream;
 let imagesStream;
 let resetPasswordStream;
 
-if (process.env.NODE_ENV !== 'test'){
+if (process.env.NODE_ENV !== 'production'){
   statesStream = fs.createReadStream("./csv/states.csv");
   citiesStream = fs.createReadStream("./csv/cities.csv");
   categoriesStream = fs.createReadStream("./csv/categories.csv");

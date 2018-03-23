@@ -1,19 +1,18 @@
 const squel = require('squel').useFlavour('postgres');
 const { Pool } = require('pg');
-const config = require('./config/databaseConfig');
+const config = require('../config/database/config');
 
 /* pool instance */
 let pool;
 
-if (process.env.NODE_ENV === 'test'){
+if (process.env.NODE_ENV !== 'production'){
   // eslint-disable-next-line
   const dotenv = require('dotenv').config();
   // find ENV and if not found then throw error!
-  pool = new Pool(config.testDatabase);
-  console.log('here');
   if (dotenv.error) {
     throw dotenv.error;
   }
+  pool = new Pool(config.testDatabase);
 } else {
   pool = new Pool(config.productionDatabase);
 }
