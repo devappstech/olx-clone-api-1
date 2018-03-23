@@ -2,20 +2,23 @@ const express = require('express');
 // eslint-disable-next-line
 const router = express.Router();
 const passport = require('passport');
+
+/* GET Default Express page. */
+router.get('/', (req, res) => {
+  res.render('index', { title: 'Index of Express' });
+});
+
 // Controllers
 const advertiseController = require('../api/controllers/advertiseController');
 const categoriesController = require('../api/controllers/categoriesController');
 const statesController = require('../api/controllers/statesController');
 const usersController = require('../api/controllers/usersController');
-const isAuthTrue = require('../api/middlewares/successAuth');
 
+//Middlewares
 // eslint-disable-next-line
 const passportSetup = require('../api/middlewares/passportSetup');
-
-/* GET home page. */
-router.get('/', (req, res) => {
-  res.render('index', { title: 'Index of Express' });
-});
+const isAuthTrue = require('../api/middlewares/successAuth');
+const validateLink = require('../api/middlewares/validateLink');
 
 /* Adverties Controller Functions */
 router.get('/ads', advertiseController.getRecentAdvertise);
@@ -49,5 +52,8 @@ router.get('/users/ads/:id', usersController.userAdvertise);
 router.put('/users/password/update', isAuthTrue.isAuth, usersController.resetPassword);
 router.post('/users/status/email', usersController.isEmailAvailable);
 router.get('/users/auth/status', usersController.loginStatus);
+router.post('/users/password/forget', usersController.forgetPassword);
+router.get('/users/password/reset/:token', validateLink.verifyToken, usersController.sucessToken);
+router.post('/users/password/reset/:token', validateLink.verifyToken, usersController.setNewPassword);
 
 module.exports = router;

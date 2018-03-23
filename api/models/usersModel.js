@@ -109,7 +109,7 @@ exports.findUserProfile = (id) => {
   submited by user
 ---------------------------------------------------------
 */
-exports.findUserAdvertises = (id) => {
+exports.findUserAdvertises = (limit, offset, id) => {
 
   const findUserAdvertises = database.queryBuilder
     .select()
@@ -122,17 +122,28 @@ exports.findUserAdvertises = (id) => {
     .field('advertises.advertise_timestamp')
     .field('cities.city_name')
     .field('states.state_name')
-    .field('images.image_path')
+    .field(database.queryBuilder.str('json_agg(images.image_path)'), 'images')
     .field('categories.category_name')
     .field('users.user_name')
     .field('users.user_phone')
+    .field('users.user_id')
+    .field('users.user_email')
+    .field('advertises.advertise_sold')
     .join('users', null, 'advertises.advertise_user_id = users.user_id')
     .join('cities', null, 'advertises.advertise_city_id = cities.city_id')
     .join('states', null, 'cities.city_state_id = states.state_id')
     .join('categories', null, 'categories.category_id = advertises.advertise_category_id')
-    .left_join('images', null, 'images.image_advertise_id = advertises.advertise_id')
+    .join('images', null, 'images.image_advertise_id = advertises.advertise_id')
     .where('users.user_id = ?', id)
+    .where('advertise_stage = ?', 'published')
+    .group('advertises.advertise_id')
+    .group('cities.city_id')
+    .group('states.state_id')
+    .group('categories.category_id')
+    .group('users.user_id')
     .order('advertise_timestamp', false)
+    .limit(limit)
+    .offset(offset)
     .toParam();
 
   return database.executeQuery(findUserAdvertises);
@@ -190,4 +201,76 @@ exports.isEmailAvailable = (email) => {
     .toParam();
 
   return database.executeQuery(EmailAvailable);
+}
+
+/*
+---------------------------------------------------------
+  Users Models: countUserAdvertise - Check total logged in
+  users advertises.
+---------------------------------------------------------
+*/
+exports.countUserAdvertise = (id) => {
+
+  const countUserAdvertise = database.queryBuilder
+    .select()
+    .from('advertises')
+    .field('COUNT(advertise_user_id)', 'count')
+    .where('advertise_user_id = ?', id)
+    .where('advertise_stage = ?', 'published')
+    .group('advertise_user_id')
+    .toParam();
+
+  return database.executeQuery(countUserAdvertise);
+}
+
+/*
+---------------------------------------------------------
+  Users Models: createLocalUserAuth - insert new reset
+  password of users auth
+---------------------------------------------------------
+*/
+exports.resetEmailEntry = (email, uuid) => {
+
+  const resetEmailEntry = database.queryBuilder
+    .insert()
+    .into('reset_password')
+    .set('reset_user_email', email)
+    .set('reset_token', uuid)
+    .returning('*')
+    .toParam();
+
+  return database.executeQuery(resetEmailEntry);
+}
+
+/*
+---------------------------------------------------------
+  Users Models: findbyEmail - find user's id by email
+---------------------------------------------------------
+*/
+exports.findIdByEmail = (email) => {
+
+  const findIdByEmail = database.queryBuilder
+    .select()
+    .from('users')
+    .where('user_email = ?', email)
+    .toParam();
+
+  return database.executeQuery(findIdByEmail);
+}
+
+/*
+---------------------------------------------------------
+  Users Models: findByToken - find user's id by token
+---------------------------------------------------------
+*/
+exports.findByToken = (token) => {
+
+  const findByToken = database.queryBuilder
+    .select()
+    .from('reset_password')
+    .join('users', null, 'user_email = reset_user_email')
+    .where('reset_token = ?', token)
+    .toParam();
+
+  return database.executeQuery(findByToken);
 }

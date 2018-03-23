@@ -1,10 +1,14 @@
 const squel = require('squel').useFlavour('postgres');
-const dotenv = require('dotenv').config();
 const { Pool } = require('pg');
+const config = require('./config/databaseConfig');
 
-// find ENV and if not found then throw error!
-if (dotenv.error) {
-  throw dotenv.error;
+if (process.env.NODE_ENV === 'test'){
+  // eslint-disable-next-line
+  const dotenv = require('dotenv').config();
+  // find ENV and if not found then throw error!
+  if (dotenv.error) {
+    throw dotenv.error;
+  }
 }
 
 /*
@@ -12,25 +16,23 @@ if (dotenv.error) {
   Squel Options for Postgres
 -----------------------------------------------
 */
-squel.cls.DefaultQueryBuilderOptions.autoQuoteFieldNames = true;
+squel.cls.DefaultQueryBuilderOptions.autoQuoteFieldNames = false;
 squel.cls.DefaultQueryBuilderOptions.autoQuoteTableNames = true;
 squel.cls.DefaultQueryBuilderOptions.autoQuoteAliasNames = true;
 squel.cls.DefaultQueryBuilderOptions.nameQuoteCharacter = '"';
 squel.cls.DefaultQueryBuilderOptions.tableAliasQuoteCharacter = '"';
 squel.cls.DefaultQueryBuilderOptions.fieldAliasQuoteCharacter = '"';
 
-// Pg Pool instance
-const pool = new Pool({
+/* pool instance */
+let pool;
 
-  user: process.env.PGUSER || 'postgres',
-  host: process.env.PGHOST || 'localhost',
-  database: process.env.PGDATABASE || 'database',
-  password: process.env.PGPASSWORD || '123456',
-  port: process.env.PGPORT || 5432,
-  idleTimeoutMillis: 500,
-  connectionTimeoutMillis: 1000
+// Pg Pool instance Defined According to NODE_ENV
+if (process.env.NODE_ENV === 'test'){
+  pool = new Pool(config.testDatabase);
+} else {
+  pool = new Pool(config.productionDatabase);
+}
 
-});
 
 /*
 -----------------------------------------------
