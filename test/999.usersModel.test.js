@@ -18,7 +18,7 @@ const oldUserAuth = {
   password: '123456789'
 };
 const newUserAuth = {
-  id: 3,
+  id: 4,
   password: 'secertAdmin'
 };
 const modifyUser = {
@@ -34,6 +34,7 @@ const registeredEmail = 'akash@improwised.com';
 const profileId = 1;
 const invaldProfileID = 4561320;
 const newPassword = '123456789'
+const newToken = '9f063345-b04c-de46-4f04-2be4e4ea212f';
 const passwordResetToken = 'e5984a7d-b305-418c-a14b-d8466cbf1290';
 
 /*
@@ -261,7 +262,7 @@ describe('find user id by email', () => {
 */
 describe('insert reset password entry to database', () => {
   it('should return data array', () => {
-    return usersModel.resetEmailEntry(oldEmail, passwordResetToken)
+    return usersModel.resetEmailEntry(oldEmail, newToken)
       .then(data => {
         expect(data).toBeTruthy();
       })

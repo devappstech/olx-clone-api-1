@@ -36,11 +36,32 @@ const newEmail = {
   email: 'differentNewEmail@gmail.com'
 }
 
-const ExistingEmail = {
+const existingEmail = {
   email: 'akash@improwised.com'
 }
 
 const passwordResetToken = 'e5984a7d-b305-418c-a14b-d8466cbf1290';
+
+/*
+----------------------------------------------------
+  Users Controller: POST /users/password/forget
+----------------------------------------------------
+*/
+// describe('POST /api/users/password/forget', () => {
+//   it('should insert data in reset-password and send reset link', (done) => {
+//     request(app)
+//     .post('/api/users/password/forget')
+//     .send({
+//       email: 'akash@improwised.com'
+//     })
+//     .expect(200)
+//     .end((err, res) => {
+//       return (err ? done.fail(err) : done());
+//       console.log(res.body)
+//       //expect(res.body.message).toBe('Success')
+//     })
+//   })
+// })
 
 /*
 ----------------------------------------------------
@@ -236,7 +257,7 @@ describe('POST /api/users/status/email', () => {
   it('should check if email is Not available for a new user', (done) => {
     request(app)
     .post('/api/users/status/email')
-    .send(ExistingEmail)
+    .send(existingEmail)
     .expect(400)
     .end((err, res) => {
       if (err) return done(err)
@@ -257,25 +278,6 @@ describe('GET /api/users/auth/status', () => {
     const req = request(app).get('/api/users/auth/status')
     req.cookies = cookies;
     req
-    .expect(200)
-    .end((err, res) => {
-      if (err) return done(err)
-      expect(res.body.message).toBe('Success')
-      done()
-    })
-  })
-})
-
-/*
-----------------------------------------------------
-  Users Controller: POST /users/password/forget
-----------------------------------------------------
-*/
-describe('POST /users/password/forget', () => {
-  it('should send password reset details on email posted', (done) => {
-    const req = request(app).post('/api/users/password/forget')
-    req
-    .send(ExistingEmail)
     .expect(200)
     .end((err, res) => {
       if (err) return done(err)
