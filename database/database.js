@@ -1,6 +1,6 @@
 const squel = require('squel').useFlavour('postgres');
 const { Pool } = require('pg');
-const config = require('../config/database/config');
+let config;
 
 /* pool instance */
 let pool;
@@ -12,8 +12,14 @@ if (process.env.NODE_ENV !== 'production'){
   if (dotenv.error) {
     throw dotenv.error;
   }
+  // eslint-disable-next-line
+  config = require('../config/database/config');
+
   pool = new Pool(config.testDatabase);
 } else {
+  // eslint-disable-next-line
+  config = require('../config/database/config');
+
   pool = new Pool(config.productionDatabase);
 }
 
