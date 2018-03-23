@@ -1,5 +1,29 @@
 const request = require('supertest');
 const app = require('../app');
+let cookies;
+
+/* Constants */
+const login = {
+  email: 'akash@improwised.com',
+  password: '123456789'
+}
+
+const newAdvertise = {
+  title: "Lorem Ipsum",
+  description: "description is this 1233",
+  price: 12345.23,
+  condition: "Good",
+  categoryId: 1,
+  lat: -2.451235,
+  long: 6.234516,
+  cityId: 1
+}
+
+const advertiseId = 1600;
+const anotherAdvertiseId = 1996;
+const categoryName = 'Fashion';
+const keyword = 'lorem';
+const exampleImagePath = 'test/test_images/google-plus.png';
 
 /*
 ----------------------------------------------------
@@ -28,7 +52,7 @@ describe('GET /api/ads', () => {
 describe('GET /api/ads/:id', () => {
   it('should fetch single advertises as json', (done) => {
     request(app)
-    .get('/api/ads/:id')
+    .get('/api/ads/' + advertiseId)
     .expect('Content-Type', /json/)
     .expect(200)
     .end((err, res) => {
@@ -41,13 +65,14 @@ describe('GET /api/ads/:id', () => {
 
 /*
 ----------------------------------------------------
-  Advertises Controller: GET /api/ads/search
+  Advertises Controller: GET /api/ads/results/
+  :keyword
 ----------------------------------------------------
 */
-describe('GET /api/ads/search', () => {
+describe('GET /api/ads/results/:keyword', () => {
   it('should fetch advertises based upon search as json', (done) => {
     request(app)
-    .get('/api/ads/search')
+    .get('/api/ads/results/' + keyword)
     .expect('Content-Type', /json/)
     .expect(200)
     .end((err, res) => {
@@ -60,14 +85,14 @@ describe('GET /api/ads/search', () => {
 
 /*
 ----------------------------------------------------
-  Advertises Controller: GET /api/ads/categories/
-  :categoryId
+  Advertises Controller: GET /api/ads/:categoryName/
+  :keyword
 ----------------------------------------------------
 */
-describe('GET /api/ads/categories/:categoryId', () => {
+describe('GET /api/ads/:categoryName/:keyword', () => {
   it('should fetch advertises based upon category id as json', (done) => {
     request(app)
-    .get('/api/ads/categories/1')
+    .get('/api/ads/' + categoryName + '/' + keyword)
     .expect('Content-Type', /json/)
     .expect(200)
     .end((err, res) => {
@@ -80,49 +105,76 @@ describe('GET /api/ads/categories/:categoryId', () => {
 
 /*
 ----------------------------------------------------
-  Advertises Controller: POST /api/ads
+  Advertises Controller: POST /api/ads,
+   POST /api/ads/:id/upload, PUT /api/ads/:id/publish
 ----------------------------------------------------
 */
-describe('POST /api/ads', () => {
-  it('should create a new advertise', (done) => {
+describe('login a user and create advertise with 3 stages', () => {
+
+  it('should first login a user', (done) => {
     request(app)
-    .post('/api/ads')
-    .expect(201)
+    .post('/api/users/login')
+    .send(login)
+    .expect(200)
+    .end((err, res) => {
+      if (err) return done(err)
+      cookies = res.headers['set-cookie'].pop().split(';')[0];
+      expect(res.body.message).toBe('Success')
+      done()
+    })
+  })
+
+  it('should create a new advertise - stage1', (done) => {
+    const req = request(app).post('/api/ads')
+    req.cookies = cookies;
+    req
+    .send(newAdvertise)
+    .expect(200)
     .end((err, res) => {
       if (err) return done(err)
       expect(res.body.message).toBe('Success')
       done()
     })
   })
-})
 
-/*
-----------------------------------------------------
-  Advertises Controller: POST /api/:id/upload
-----------------------------------------------------
-*/
-describe('POST /api/:id/upload', () => {
-  it('should upload a photos for advertise', (done) => {
-    request(app)
-    .post('/api/ads/1/upload')
-    .expect(201)
+  it('should upload a photos of advertise - stage2', (done) => {
+    const req = request(app).post('/api/ads/' + advertiseId + '/upload')
+    req.cookies = cookies;
+    req
+    .attach('images', exampleImagePath)
+    .expect(200)
     .end((err, res) => {
       if (err) return done(err)
       expect(res.body.message).toBe('Success')
       done()
     })
   })
+
+  it('should publish a advertise - published(stage3)', (done) => {
+    const req = request(app).put('/api/ads/' + advertiseId + '/publish')
+    req.cookies = cookies;
+    req
+    .expect(200)
+    .end((err, res) => {
+      if (err) return done(err)
+      expect(res.body.message).toBe('Success')
+      done()
+    })
+  })
+
+
 })
 
 /*
 ----------------------------------------------------
-  Advertises Controller: PUT /api/ads/:id
+  Advertises Controller: PUT /api/ads/:id/sells
 ----------------------------------------------------
 */
-describe('PUT /api/ads/:id', () => {
-  it('should modify a existing advertise', (done) => {
-    request(app)
-    .put('/api/ads/:id')
+describe('PUT /api/ads/:id/sell', () => {
+  it('should modify a existing advertise status as false', (done) => {
+    const req = request(app).put('/api/ads/' + advertiseId + '/sell')
+    req.cookies = cookies;
+    req
     .expect(200)
     .end((err, res) => {
       if (err) return done(err)
@@ -137,10 +189,11 @@ describe('PUT /api/ads/:id', () => {
   Advertises Controller: PUT /api/ads/:id/sells
 ----------------------------------------------------
 */
-describe('PUT /api/ads/:id/sells', () => {
-  it('should modify a existing advertise status', (done) => {
-    request(app)
-    .put('/api/ads/1/sells')
+describe('PUT /api/ads/:id/sold', () => {
+  it('should modify a existing advertise status as true', (done) => {
+    const req = request(app).put('/api/ads/' + advertiseId + '/sold')
+    req.cookies = cookies;
+    req
     .expect(200)
     .end((err, res) => {
       if (err) return done(err)
@@ -157,8 +210,9 @@ describe('PUT /api/ads/:id/sells', () => {
 */
 describe('DELETE /api/ads/:id', () => {
   it('should delete a existing advertise', (done) => {
-    request(app)
-    .delete('/api/ads/1')
+    const req = request(app).delete('/api/ads/' + anotherAdvertiseId)
+    req.cookies = cookies;
+    req
     .expect(200)
     .end((err, res) => {
       if (err) return done(err)
@@ -167,4 +221,3 @@ describe('DELETE /api/ads/:id', () => {
     })
   })
 })
-

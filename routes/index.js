@@ -22,14 +22,16 @@ const validateLink = require('../api/middlewares/validateLink');
 
 /* Adverties Controller Functions */
 router.get('/ads', advertiseController.getRecentAdvertise);
-router.post('/ads', advertiseController.createAdvertise);
+router.post('/ads', isAuthTrue.isAuth, advertiseController.createAdvertise); //stage1
+router.post('/ads/:id/upload', isAuthTrue.isAuth, advertiseController.uploadAdvertiseImages); //stage2
+router.put('/ads/:id/publish', isAuthTrue.isAuth, advertiseController.publishAdvertise); //published
 router.get('/ads/:id', advertiseController.getSingleAdvertise);
-router.put('/ads/:id', advertiseController.modifySingleAdvertise);
-router.delete('/ads/:id', advertiseController.deleteSingleAdvertise);
-router.put('/ads/:id/sells', advertiseController.setAdvertiseStatus);
-router.get('/ads/search/:keyword', advertiseController.getSearchResult);
-router.get('/ads/categories/:categoryId', advertiseController.showAdInCategory);
-router.post('/ads/:id/upload', advertiseController.uploadAdvertisePhotos);
+//router.put('/ads/:id', advertiseController.modifySingleAdvertise);
+router.delete('/ads/:id', isAuthTrue.isAuth, advertiseController.deleteSingleAdvertise);
+router.put('/ads/:id/sold', isAuthTrue.isAuth, advertiseController.markAsSold);
+router.put('/ads/:id/sell', isAuthTrue.isAuth, advertiseController.markAsUnsold);
+router.get('/ads/results/:term', advertiseController.searchAll);
+router.get('/ads/:categorName/:term', advertiseController.searchInCategory);
 
 /* Categories Controller Functions */
 router.get('/categories', categoriesController.readAll);
@@ -38,7 +40,7 @@ router.get('/categories/:id', categoriesController.read);
 /* States Controller Functions */
 router.get('/states', statesController.readAll);
 router.get('/states/:id', statesController.read);
-router.get('/states/:id/cities', statesController.stateCities)
+router.get('/states/:id/cities', statesController.stateCities);
 
 /* Users Controller Functions */
 router.get('/users/profile', isAuthTrue.isAuth, usersController.viewProfile);
