@@ -18,9 +18,10 @@ services:
       context: .
     restart: unless-stopped
     environment:
-      APP_ENV: production
+      NODE_ENV: production
       PORT: 3000
       PGHOST: postgres
+      PG_TEST_DB: olx-test
       PGUSER: postgres
       PGPASSWORD: 123456
       PGPORT: 5432

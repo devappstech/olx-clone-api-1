@@ -11,17 +11,7 @@ exports.productionDatabase = {
 exports.testDatabase = {
   user: process.env.PGUSER,
   host: process.env.PGHOST,
-  database: process.env.PGTESTDB,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT,
-  idleTimeoutMillis: 500,
-  connectionTimeoutMillis: 1000
-}
-
-exports.dockerContainer = {
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDOCKERDB,
+  database: process.env.PG_TEST_DB,
   password: process.env.PGPASSWORD,
   port: process.env.PGPORT,
   idleTimeoutMillis: 500,

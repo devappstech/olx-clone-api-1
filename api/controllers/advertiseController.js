@@ -110,6 +110,7 @@ exports.uploadAdvertiseImages = (req, res) => {
   const id = parseInt(req.params.id, 0);
   const userId = parseInt(req.session.passport.user.user_id, 0);
   const stage = 'stage2';
+  const imagesDate = Date.now();
 
   const result = Joi.validate({
     advertiseId: id,
@@ -161,8 +162,8 @@ exports.uploadAdvertiseImages = (req, res) => {
                 break;
             }
 
-            cb(null, file.originalname.slice(0, 4) + Date.now() + extension);
-            imagesName.push(file.originalname.slice(0, 4) + Date.now() + extension);
+            cb(null, file.originalname.slice(0, 4) + imagesDate + extension);
+            imagesName.push(file.originalname.slice(0, 4) + imagesDate + extension);
           }
         });
 
