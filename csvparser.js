@@ -17,7 +17,7 @@ let advertisesStream;
 let imagesStream;
 let resetPasswordStream;
 
-if (process.env.NODE_ENV !== 'production'){
+if (process.env.NODE_ENV === 'production'){
   statesStream = fs.createReadStream("./csv/states.csv");
   citiesStream = fs.createReadStream("./csv/cities.csv");
   categoriesStream = fs.createReadStream("./csv/categories.csv");
