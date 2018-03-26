@@ -38,9 +38,9 @@ check_linting:
   script: make lint
 
 migrate_schema:
+    image: postgres:latest
     stage: migrate
     script:
-      - docker ps
       - ./ciMigration.sh
 
 test_with_lab:
