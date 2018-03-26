@@ -23,12 +23,12 @@ stages:
 cache:
   paths:
     - node_modules/
+    - docker ps
 
 install_dependencies:
   stage: build
   script:
     - npm install
-    - ./postgres_setup.sh
 
   artifacts:
     paths:
