@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "lint": "ESLINT_ARGS='--quiet' make lint",
+    "ciMigrate": "./ciMigrate.sh",
     "migration": "./migrate.sh",
     "seeder": "node import.js",
     "test": "./test_in_sequence.sh"

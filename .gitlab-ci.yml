@@ -1,0 +1,46 @@
+image: node:latest
+
+services:
+  - postgres:latest
+
+variables:
+  CI_ENV: ci
+  POSTGRES_DB: postgres
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  sessionSecert: someVerySecertK3yThatNoBodyKnow$Actually
+  BASE_URL: http://localhost
+  emailUser: akash@improwised.com
+  emailPassword: yourpassword
+
+stages:
+  - build
+  - lint
+  - migrate
+  - test
+
+cache:
+  paths:
+    - node_modules/
+
+install_dependencies:
+  stage: build
+  script:
+    - npm install
+
+  artifacts:
+    paths:
+      - node_modules/
+
+check_linting:
+  stage: lint
+  script: make lint
+
+migrate_schema:
+    stage: migrate
+    script:
+      - npm run ciMigrate
+
+test_with_lab:
+  stage: test
+  script: npm test

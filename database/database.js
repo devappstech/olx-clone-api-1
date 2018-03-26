@@ -12,10 +12,15 @@ if (process.env.NODE_ENV !== 'production'){
   if (dotenv.error) {
     throw dotenv.error;
   }
-  // eslint-disable-next-line
-  config = require('../config/database/config');
-
-  pool = new Pool(config.testDatabase);
+  if (!process.env.CI_ENV){
+    // eslint-disable-next-line
+    config = require('../config/database/config');
+    pool = new Pool(config.testCiDatabase);
+  } else {
+    // eslint-disable-next-line
+    config = require('../config/database/config');
+    pool = new Pool(config.testDatabase);
+  }
 } else {
   // eslint-disable-next-line
   config = require('../config/database/config');
