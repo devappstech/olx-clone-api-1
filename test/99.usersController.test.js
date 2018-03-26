@@ -44,27 +44,6 @@ const passwordResetToken = 'e5984a7d-b305-418c-a14b-d8466cbf1290';
 
 /*
 ----------------------------------------------------
-  Users Controller: POST /users/password/forget
-----------------------------------------------------
-*/
-// describe('POST /api/users/password/forget', () => {
-//   it('should insert data in reset-password and send reset link', (done) => {
-//     request(app)
-//     .post('/api/users/password/forget')
-//     .send({
-//       email: 'akash@improwised.com'
-//     })
-//     .expect(200)
-//     .end((err, res) => {
-//       return (err ? done.fail(err) : done());
-//       console.log(res.body)
-//       //expect(res.body.message).toBe('Success')
-//     })
-//   })
-// })
-
-/*
-----------------------------------------------------
   Users Controller: POST /api/users/register
 ----------------------------------------------------
 */
