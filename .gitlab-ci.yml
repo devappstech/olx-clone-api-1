@@ -1,12 +1,10 @@
 image: node:latest
 
-services:
-  - postgres:latest
-
 variables:
   CI_ENV: ci
   POSTGRES_DB: postgres
   POSTGRES_USER: postgres
+  POSTGRES_HOST: postgres
   POSTGRES_PASSWORD: postgres
   sessionSecert: someVerySecertK3yThatNoBodyKnow$Actually
   BASE_URL: http://localhost
@@ -27,6 +25,7 @@ install_dependencies:
   stage: build
   script:
     - npm install
+    - ./postgres_setup.sh
 
   artifacts:
     paths:

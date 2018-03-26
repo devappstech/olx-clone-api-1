@@ -1,4 +1,11 @@
-const dotenv = require('dotenv').config();
+if (!process.env.CI_ENV){
+  // eslint-disable-next-line
+  const dotenv = require('dotenv').config();
+  // find ENV and if not found then throw error!
+  if (dotenv.error) {
+    throw dotenv.error;
+  }
+}
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
@@ -11,11 +18,6 @@ const index = require('./routes/index');
 const users = require('./routes/users');
 
 const app = express();
-
-// find ENV and if not found then throw error!
-if (dotenv.error) {
-  throw dotenv.error;
-}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
