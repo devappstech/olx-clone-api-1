@@ -1,5 +1,8 @@
 image: node:latest
 
+services:
+  - postgres:latest
+
 variables:
   CI_ENV: ci
   POSTGRES_DB: postgres
@@ -25,7 +28,6 @@ install_dependencies:
   stage: build
   script:
     - npm install
-    - ./postgres_setup.sh
 
   artifacts:
     paths:
