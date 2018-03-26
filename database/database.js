@@ -6,17 +6,17 @@ let config;
 let pool;
 
 if (process.env.NODE_ENV !== 'production'){
-  // eslint-disable-next-line
-  const dotenv = require('dotenv').config();
-  // find ENV and if not found then throw error!
-  if (dotenv.error) {
-    throw dotenv.error;
-  }
-  if (!process.env.CI_ENV){
+  if (!process.env.CI_ENV) {
     // eslint-disable-next-line
     config = require('../config/database/config');
     pool = new Pool(config.testCiDatabase);
   } else {
+    // eslint-disable-next-line
+    const dotenv = require('dotenv').config();
+    // find ENV and if not found then throw error!
+    if (dotenv.error) {
+      throw dotenv.error;
+    }
     // eslint-disable-next-line
     config = require('../config/database/config');
     pool = new Pool(config.testDatabase);
