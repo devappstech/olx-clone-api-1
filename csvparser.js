@@ -1,18 +1,41 @@
 const fs = require('fs');
 const csv = require('fast-csv');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 /*
 -----------------------------------------------
   File System Read Stream for Each Csv
 -----------------------------------------------
 */
-const statesStream = fs.createReadStream("./csv/states.csv");
-const citiesStream = fs.createReadStream("./csv/cities.csv");
-const categoriesStream = fs.createReadStream("./csv/categories.csv");
-const usersStream = fs.createReadStream("./csv/users.csv");
-const authStream = fs.createReadStream("./csv/auth.csv");
-const advertisesStream = fs.createReadStream("./csv/advertises.csv");
-const imagesStream = fs.createReadStream('./csv/images.csv');
+let statesStream;
+let citiesStream;
+let categoriesStream;
+let usersStream;
+let authStream;
+let advertisesStream;
+let imagesStream;
+let resetPasswordStream;
+
+if (process.env.NODE_ENV !== 'test'){
+  statesStream = fs.createReadStream("./csv/states.csv");
+  citiesStream = fs.createReadStream("./csv/cities.csv");
+  categoriesStream = fs.createReadStream("./csv/categories.csv");
+  usersStream = fs.createReadStream("./csv/users.csv");
+  authStream = fs.createReadStream("./csv/auth.csv");
+  advertisesStream = fs.createReadStream("./csv/advertises.csv");
+  imagesStream = fs.createReadStream('./csv/images.csv');
+  resetPasswordStream = fs.createReadStream('./csv/reset_password.csv');
+} else {
+  statesStream = fs.createReadStream("./csv/testcsv/states.csv");
+  citiesStream = fs.createReadStream("./csv/testcsv/cities.csv");
+  categoriesStream = fs.createReadStream("./csv/testcsv/categories.csv");
+  usersStream = fs.createReadStream("./csv/testcsv/users.csv");
+  authStream = fs.createReadStream("./csv/testcsv/auth.csv");
+  advertisesStream = fs.createReadStream("./csv/testcsv/advertises.csv");
+  imagesStream = fs.createReadStream('./csv/testcsv/images.csv');
+  resetPasswordStream = fs.createReadStream('./csv/testcsv/reset_password.csv');
+}
 
 /*
 -----------------------------------------------
@@ -108,11 +131,19 @@ exports.parseAuth = () => {
     csv
     .fromStream(authStream, { headers: true })
     .on("data", (data) => {
-      parsedArray.push({
-        authUserId: data.auth_user_id,
-        authType: data.auth_type,
-        authPassword: data.auth_password
-      })
+      if (data.auth_password) {
+        parsedArray.push({
+          authUserId: data.auth_user_id,
+          authType: data.auth_type,
+          authPassword: bcrypt.hashSync(data.auth_password, saltRounds)
+        })
+      } else {
+        parsedArray.push({
+          authUserId: data.auth_user_id,
+          authType: data.auth_type,
+          authPassword: data.auth_password
+        })
+      }
     })
     .on("end", function(){
       resolve(parsedArray);
@@ -142,7 +173,8 @@ exports.parseAdvertises = () => {
         advertiseLongitude: data.advertise_longitude,
         advertiseTimestamp: data.advertise_timestamp,
         advertiseSold: data.advertise_sold,
-        advertiseCityId: data.advertise_city_id
+        advertiseCityId: data.advertise_city_id,
+        advertiseStage: data.advertise_stage
       })
     })
     .on("end", function(){
@@ -165,6 +197,30 @@ exports.parseImages = () => {
       parsedArray.push({
         imagePath: data.image_path,
         imageAdvertiseId: data.image_advertise_id
+      })
+    })
+    .on("end", function(){
+      resolve(parsedArray);
+    });
+  })
+};
+
+/*
+-----------------------------------------------
+  Parse reset_password Csv
+-----------------------------------------------
+*/
+exports.parseResetPassword = () => {
+  const parsedArray = [];
+  return new Promise((resolve) => {
+    csv
+    .fromStream(resetPasswordStream, { headers: true })
+    .on("data", (data) => {
+      parsedArray.push({
+        resetId: data.reset_id,
+        resetUserEmail: data.reset_user_email,
+        resetToken: data.reset_token,
+        resetTimestamp: data.reset_timestamp
       })
     })
     .on("end", function(){

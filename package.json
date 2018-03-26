@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node ./bin/www",
     "lint": "ESLINT_ARGS='--quiet' make lint",
-    "test": "NODE_ENV=test jest -u --forceExit"
+    "migration": "./migrate.sh",
+    "seeder": "node import.js",
+    "test": "./test_in_sequence.sh"
   },
   "dependencies": {
     "bcrypt": "^1.0.3",

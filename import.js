@@ -130,6 +130,7 @@ exports.insertAdvertises = () => {
      .set('advertise_timestamp', item.advertiseTimestamp)
      .set('advertise_sold', item.advertiseSold)
      .set('advertise_city_id', parseInt(item.advertiseCityId, 0))
+     .set('advertise_stage', item.advertiseStage.toString())
      .toParam();
 
       return database.executeQuery(query);
@@ -158,6 +159,28 @@ exports.insertImages = () => {
 }
 
 /*
+-----------------------------------------------
+  Seed reset_password Csv data to database
+-----------------------------------------------
+*/
+exports.insertResetPassword = () => {
+  return parsedData.parseResetPassword().then((data) => {
+    return Promise.all(data.map((item) => {
+      let query = database.queryBuilder
+     .insert()
+     .into('reset_password')
+     .set('reset_id', parseInt(item.resetId, 0))
+     .set('reset_user_email', item.resetUserEmail.toString())
+     .set('reset_token', item.resetToken.toString())
+     .set('reset_timestamp', item.resetTimestamp)
+     .toParam();
+
+      return database.executeQuery(query);
+    }));
+  });
+}
+
+/*
 ----------------------------------------------------
   Execution Of Seeding Start From States then Cities,
   Categories, Users, Auth, Advertises and Images.
@@ -172,7 +195,7 @@ if (!(process.env.NODE_ENV === 'test')){
     return this.insertCities();
   })
   .then(() => {
-    console.log('Done States');
+    console.log('Done Cities');
     return this.insertCategories();
   })
   .then(() => {
@@ -189,6 +212,10 @@ if (!(process.env.NODE_ENV === 'test')){
   })
   .then(() => {
     console.log('Done advertises');
+    return this.insertResetPassword();
+  })
+  .then(() => {
+    console.log('Done reset password table');
     return this.insertImages();
   })
   .then(() => {

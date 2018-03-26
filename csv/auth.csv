@@ -1,5 +1,5 @@
 auth_id,auth_user_id,auth_type,auth_password
-1,1,Local,new_password
+1,1,Local,testpassword
 2,2,Google,
 3,3,Facebook,
 4,4,Local,VBP73PXT8RD
