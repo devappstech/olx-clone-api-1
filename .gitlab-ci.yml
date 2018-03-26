@@ -7,7 +7,6 @@ variables:
   NODE_ENV: ci
   POSTGRES_DB: postgres
   POSTGRES_USER: postgres
-  POSTGRES_HOST: postgres
   POSTGRES_PASSWORD: postgres
   sessionSecert: someVerySecertK3yThatNoBodyKnow$Actually
   BASE_URL: http://localhost
