@@ -6,7 +6,7 @@ let config;
 let pool;
 
 if (process.env.NODE_ENV !== 'production'){
-  if (!process.env.CI_ENV) {
+  if (process.env.NODE_ENV === 'ci') {
     // eslint-disable-next-line
     config = require('../config/database/config');
     pool = new Pool(config.testCiDatabase);

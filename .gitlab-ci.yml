@@ -4,7 +4,7 @@ services:
   - postgres:latest
 
 variables:
-  CI_ENV: ci
+  NODE_ENV: ci
   POSTGRES_DB: postgres
   POSTGRES_USER: postgres
   POSTGRES_HOST: postgres
