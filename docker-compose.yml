@@ -29,7 +29,7 @@ services:
       sessionSecert: someVerySecertK3yThatNoBodyKnow$Actually
       BASE_URL: http://localhost
       emailUser: akash@improwised.com
-      emailPassword: corona550
+      emailPassword: yourpassword
     ports:
       - "3000:3000"
     links:
