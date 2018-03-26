@@ -7,6 +7,6 @@ echo '----------------------------------------------------------'
 
 for entry in $PWD/database/migrations/*.sql
 do
-  psql -U "postgres" -d "postgres" -f "$entry" -h "postgres"
+  PGPASSWORD="postgres" psql -U "postgres" -d "postgres" -f "$entry" -h "postgres"
 done
 echo "all SQL files inside "$PWD/database/migrations/" migrated!"
