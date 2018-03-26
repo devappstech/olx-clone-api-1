@@ -225,7 +225,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201-200response'
+             $ref: '#/components/schemas/getMultipleAdvertiseData'
         '404':
           description: Not Found
           content:
@@ -384,7 +384,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201-200response'
+             $ref: '#/components/schemas/getSingleAdvertiseData'
         '404':
           description: Not Found
           content:
@@ -564,7 +564,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201-200response'
+             $ref: '#/components/schemas/getMultipleAdvertiseData'
         '404':
           description: Not Found
           content:
@@ -602,13 +602,35 @@ paths:
         schema:
           type: integer
         description: keyword is required to search in advertises
+      - name: limit
+        in: query
+        schema:
+          type: integer
+        description: Limit is for Pagination
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: page is for Pagination
+      - name: minPrice
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Minumum Price for ranging between prices
+      - name: maxPrice
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Maximum Price for ranging between prices
       responses:
         '200':
           description: OK!
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201-200response'
+             $ref: '#/components/schemas/getMultipleAdvertiseData'
         '404':
           description: Not Found
           content:
@@ -843,7 +865,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201-200response'
+             $ref: '#/components/schemas/getMultipleAdvertiseData'
         '404':
           description: Not Found
           content:
@@ -885,7 +907,7 @@ paths:
           content:
            application/json:
             schema:
-             $ref: '#/components/schemas/201-200response'
+             $ref: '#/components/schemas/getMultipleAdvertiseData'
         '404':
           description: Not Found
           content:
@@ -1077,6 +1099,13 @@ paths:
       tags:
       - "users"
       description: validate user password reset token
+      parameters:
+       - name: token
+         in: path
+         required: true
+         description: token of user
+         schema:
+          type: string
       responses:
         '200':
           description: OK!
@@ -1107,6 +1136,13 @@ paths:
       tags:
       - "users"
       description: validate user password reset token
+      parameters:
+       - name: token
+         in: path
+         required: true
+         description: token of user
+         schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -1322,3 +1358,109 @@ components:
       properties:
         email:
           type: string
+
+    getMultipleAdvertiseData:
+      required:
+       - message
+       - metadata
+       - data
+      properties:
+        message:
+          type: string
+        metadata:
+          type: array
+          items:
+            type: object
+            properties:
+              currentPage:
+                type: integer
+              limit:
+                type: integer
+              displaing:
+                type: integer
+              total:
+                type: integer
+              last_page:
+                type: integer
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              advertise_id:
+                type: integer
+              advertise_title:
+                type: string
+              advertise_description:
+                type: string
+              advertise_price:
+                type: number
+              advertise_condition:
+                type: string
+              advertise_timestamp:
+                type: string
+              city_name:
+                type: string
+              state_name:
+                type: string
+              images:
+                type: array
+                items:
+                  type: string
+              category_name:
+                type: string
+              user_name:
+                type: string
+              user_phone:
+                type: number
+              user_id:
+                type: integer
+              user_email:
+                type: string
+              advertise_sold:
+                type: boolean
+
+    getSingleAdvertiseData:
+      required:
+       - message
+       - data
+      properties:
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              advertise_id:
+                type: integer
+              advertise_title:
+                type: string
+              advertise_description:
+                type: string
+              advertise_price:
+                type: number
+              advertise_condition:
+                type: string
+              advertise_timestamp:
+                type: string
+              city_name:
+                type: string
+              state_name:
+                type: string
+              images:
+                type: array
+                items:
+                  type: string
+              category_name:
+                type: string
+              user_name:
+                type: string
+              user_phone:
+                type: number
+              user_id:
+                type: integer
+              user_email:
+                type: string
+              advertise_sold:
+                type: boolean
