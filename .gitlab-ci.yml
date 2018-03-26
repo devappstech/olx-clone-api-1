@@ -39,7 +39,7 @@ check_linting:
 migrate_schema:
     stage: migrate
     script:
-      - npm run ciMigrate
+      - ./ciMigration.sh
 
 test_with_lab:
   stage: test
