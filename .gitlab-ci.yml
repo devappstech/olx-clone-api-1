@@ -23,7 +23,6 @@ stages:
 cache:
   paths:
     - node_modules/
-    - docker ps
 
 install_dependencies:
   stage: build
@@ -41,6 +40,7 @@ check_linting:
 migrate_schema:
     stage: migrate
     script:
+      - docker ps
       - ./ciMigration.sh
 
 test_with_lab:
