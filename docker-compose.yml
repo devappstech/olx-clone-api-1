@@ -37,11 +37,11 @@ services:
       context: ../olx-design
     restart: unless-stopped
     environment:
-      PORT: 3001
-      NODE_ENV: production
-      API_URL: http://app:3000
+      PORT: $REACT_PORT
+      NODE_ENV: $NODE_ENV
+      API_URL: $API_URL
     ports:
-      - "3001:3001"
+      - "$REACT_PORT:$REACT_PORT"
     links:
       - app
 
