@@ -17,13 +17,3 @@ exports.testDatabase = {
   idleTimeoutMillis: 500,
   connectionTimeoutMillis: 1000
 }
-
-exports.testCiDatabase = {
-  user: process.env.POSTGRES_USER,
-  host: 'postgres',
-  database: process.env.POSTGRES_DB,
-  password: process.env.POSTGRES_PASSWORD,
-  port: 5432,
-  idleTimeoutMillis: 500,
-  connectionTimeoutMillis: 1000
-}
