@@ -32,6 +32,19 @@ services:
     links:
       - postgres
 
+  react:
+    build:
+      context: ../olx-design
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      NODE_ENV: production
+      API_URL: http://app:3000
+    ports:
+      - "3001:3001"
+    links:
+      - app
+
   nginx:
     build:
       context: ./nginx/
@@ -42,3 +55,4 @@ services:
       - "80:80"
     links:
       - app
+      - react
