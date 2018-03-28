@@ -17,3 +17,13 @@ exports.testDatabase = {
   idleTimeoutMillis: 500,
   connectionTimeoutMillis: 1000
 }
+
+exports.ciDatabaseConfig = {
+  user: process.env.POSTGRES_DB,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_DB,
+  port: process.env.PGPORT,
+  idleTimeoutMillis: 500,
+  connectionTimeoutMillis: 1000
+}
