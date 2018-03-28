@@ -37,7 +37,6 @@ nbproject
 .svn
 .idea
 .tmp
-.env
 node_modules
 uploads
 test/__snapshots__
