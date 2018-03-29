@@ -41,3 +41,7 @@ node_modules
 uploads
 test/__snapshots__
 database/query_list
+
+#ci
+.gitlab-ci.yml
+ciMigration.sh
