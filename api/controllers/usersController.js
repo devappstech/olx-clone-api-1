@@ -2,7 +2,7 @@ const usersModel = require('../models/usersModel');
 const emailService = require('../services/sendEmail');
 const Joi = require('joi');
 const uuidv4 = require('uuid/v4');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const account = {
   user: process.env.emailUser.toString(),
