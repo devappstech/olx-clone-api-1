@@ -45,8 +45,6 @@ services:
       API_URL: http://app:3000
     ports:
       - "3001:3001"
-    links:
-      - app
 
   nginx:
     build:
