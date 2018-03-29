@@ -42,8 +42,6 @@ services:
       API_URL: $API_URL
     ports:
       - "$REACT_PORT:$REACT_PORT"
-    links:
-      - app
 
   nginx:
     build:
