@@ -5,7 +5,7 @@ let cookies;
 /* Constants */
 const login = {
   email: 'akash@improwised.com',
-  password: '123456789'
+  password: 'testpassword'
 }
 
 const newAdvertise = {
@@ -19,8 +19,8 @@ const newAdvertise = {
   cityId: 1
 }
 
-const advertiseId = 1600;
-const anotherAdvertiseId = 1996;
+const advertiseId = 1;
+const anotherAdvertiseId = 3;
 const categoryName = 'Fashion';
 const keyword = 'lorem';
 const exampleImagePath = 'test/test_images/google-plus.png';

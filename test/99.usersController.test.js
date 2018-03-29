@@ -8,14 +8,14 @@ Constant Variables for Testcases
 */
 const registerNewUser = {
   username: 'test',
-  email: 'akash1@improwised.com',
+  email: 'uniqueEmailEveryTime@improwised.com',
   password: '123456789',
   phone: '7897897890'
 }
 
 const loginExistingUser = {
-  email: 'akash1@improwised.com',
-  password: '123456789'
+  email: 'akash@improwised.com',
+  password: 'testpassword'
 }
 
 const profileId = 1;
@@ -24,20 +24,20 @@ const advertiseId = 1;
 
 const modifyUserDetails = {
   username: 'akash updated',
-  email: 'akash1@improwised.com',
+  email: 'akash@improwised.com',
   phone: '1234567890'
 }
 
 const newPassword = {
-  password: '123456789'
+  password: 'testpassword'
 }
 
 const newEmail = {
-  email: 'newEmail1233@gmail.com'
+  email: 'differentNewEmail@gmail.com'
 }
 
-const ExistingEmail = {
-  email: 'akash1@improwised.com'
+const existingEmail = {
+  email: 'akash@improwised.com'
 }
 
 const passwordResetToken = 'e5984a7d-b305-418c-a14b-d8466cbf1290';
@@ -236,7 +236,7 @@ describe('POST /api/users/status/email', () => {
   it('should check if email is Not available for a new user', (done) => {
     request(app)
     .post('/api/users/status/email')
-    .send(ExistingEmail)
+    .send(existingEmail)
     .expect(400)
     .end((err, res) => {
       if (err) return done(err)
@@ -257,25 +257,6 @@ describe('GET /api/users/auth/status', () => {
     const req = request(app).get('/api/users/auth/status')
     req.cookies = cookies;
     req
-    .expect(200)
-    .end((err, res) => {
-      if (err) return done(err)
-      expect(res.body.message).toBe('Success')
-      done()
-    })
-  })
-})
-
-/*
-----------------------------------------------------
-  Users Controller: POST /users/password/forget
-----------------------------------------------------
-*/
-describe('POST /users/password/forget', () => {
-  it('should send password reset details on email posted', (done) => {
-    const req = request(app).post('/api/users/password/forget')
-    req
-    .send(ExistingEmail)
     .expect(200)
     .end((err, res) => {
       if (err) return done(err)

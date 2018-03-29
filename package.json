@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "lint": "ESLINT_ARGS='--quiet' make lint",
     "migration": "./migrate.sh",
-    "seeder": "node import.js",
+    "seeder": "NODE_ENV=production node import.js",
     "test": "./test_in_sequence.sh"
   },
   "dependencies": {

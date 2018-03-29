@@ -36,9 +36,14 @@ nbproject
 .hg
 .svn
 .idea
-.tmp
 .env
+.tmp
 node_modules
 uploads
 test/__snapshots__
 database/query_list
+postgres_data/
+
+#ci
+.gitlab-ci.yml
+ciMigration.sh

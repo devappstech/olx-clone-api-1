@@ -1,7 +1,7 @@
 exports.productionDatabase = {
   user: process.env.PGUSER,
   host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
+  database: process.env.PG_HOST_DATABASE,
   password: process.env.PGPASSWORD,
   port: process.env.PGPORT,
   idleTimeoutMillis: 500,
