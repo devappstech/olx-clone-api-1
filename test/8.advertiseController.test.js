@@ -65,14 +65,14 @@ describe('GET /api/ads/:id', () => {
 
 /*
 ----------------------------------------------------
-  Advertises Controller: GET /api/ads/results/
+  Advertises Controller: GET /api/ads/search/results/
   :keyword
 ----------------------------------------------------
 */
-describe('GET /api/ads/results/:keyword', () => {
+describe('GET /api/ads/search/results/:keyword', () => {
   it('should fetch advertises based upon search as json', (done) => {
     request(app)
-    .get('/api/ads/results/' + keyword)
+    .get('/api/ads/search/results/' + keyword)
     .expect('Content-Type', /json/)
     .expect(200)
     .end((err, res) => {
@@ -85,14 +85,14 @@ describe('GET /api/ads/results/:keyword', () => {
 
 /*
 ----------------------------------------------------
-  Advertises Controller: GET /api/ads/:categoryName/
-  :keyword
+  Advertises Controller: GET /api/ads/categories/
+  :categoryName/?term=keyword
 ----------------------------------------------------
 */
-describe('GET /api/ads/:categoryName/:keyword', () => {
+describe('GET /api/ads/categories/:categoryName/', () => {
   it('should fetch advertises based upon category id as json', (done) => {
     request(app)
-    .get('/api/ads/' + categoryName + '/' + keyword)
+    .get('/api/ads/categories/' + categoryName + '/?term=' + keyword)
     .expect('Content-Type', /json/)
     .expect(200)
     .end((err, res) => {

@@ -199,8 +199,8 @@ describe('show single advertise with details', () => {
 describe('search keyword in all category for advertise', () => {
 
   it('should return data elements in array', () => {
-    return advertisesModel.searchResult(search.limit, search.offset,
-     search.keyword, search.minPrice, search.maxPrice)
+    return advertisesModel.searchResult(search.keyword,
+      search.minPrice, search.maxPrice)
       .then(data => {
         expect(data).toBeTruthy();
       })
@@ -215,8 +215,8 @@ describe('search keyword in all category for advertise', () => {
 describe('search keyword in specific category for advertise', () => {
 
   it('should return data elements in array', () => {
-    return advertisesModel.categorySearchResult(search.limit, search.offset,
-     search.category, search.keyword, search.minPrice, search.maxPrice)
+    return advertisesModel.categorySearchResult(search.category,
+      search.keyword, search.minPrice, search.maxPrice)
       .then(data => {
         expect(data).toBeTruthy();
       })
