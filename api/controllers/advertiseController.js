@@ -479,29 +479,16 @@ exports.getSingleAdvertise = (req, res) => {
 */
 exports.searchAll = (req, res) => {
 
-  // Pagination
-  let page = parseInt(req.query.page, 0);
-  if (isNaN(page) || page < 1) {
-    page = 1;
-  }
-
-  let limit = parseInt(req.query.limit, 0);
-  if (isNaN(limit)) {
-    limit = 10;
-  } else if (limit < 1) {
-    limit = 1;
-  }
-
-  let offset = (page - 1) * limit;
-
   const term = slug(req.params.term, ' ');
+
+  console.log(term);
 
   const filterArray = [
     parseInt(req.query.minPrice, 0) || defaultMinPrice,
     parseInt(req.query.maxPrice, 0) || defaultMaxPrice
   ]
 
-  advertisesModel.searchResult(limit, offset, term, ...filterArray)
+  advertisesModel.searchResult(term, ...filterArray)
   .then((data) => {
     if (!data || data.length <= 0){
       res.status(404).json({
@@ -526,22 +513,14 @@ exports.searchAll = (req, res) => {
 ---------------------------------------------------------
 */
 exports.searchInCategory = (req, res) => {
-  // Pagination
-  let page = parseInt(req.query.page, 0);
-  if (isNaN(page) || page < 1) {
-    page = 1;
+
+  let term;
+  if (!req.query.term){
+    term = null;
+  } else {
+    term = req.query.term;
   }
 
-  let limit = parseInt(req.query.limit, 0);
-  if (isNaN(limit)) {
-    limit = 10;
-  } else if (limit < 1) {
-    limit = 1;
-  }
-
-  let offset = (page - 1) * limit;
-
-  const term = slug(req.params.term, ' ');
   const category = slug(req.params.categorName)
 
   const filterArray = [
@@ -549,7 +528,7 @@ exports.searchInCategory = (req, res) => {
     parseInt(req.query.maxPrice, 0) || defaultMaxPrice
   ]
 
-  advertisesModel.categorySearchResult(limit, offset, category, term, ...filterArray)
+  advertisesModel.categorySearchResult(category, term, ...filterArray)
   .then((data) => {
     if (!data || data.length <= 0){
       res.status(404).json({
