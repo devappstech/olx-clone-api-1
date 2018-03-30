@@ -524,28 +524,18 @@ paths:
             schema:
              $ref: '#/components/schemas/400response'
 
-  /ads/results/{keyword}:
+  /ads/search/results/{term}:
     get:
       tags:
       - "advertises"
       description: it is used for search and filter
       parameters:
-      - name: keyword
+      - name: term
         in: path
         required: true
         schema:
           type: string
         description: this keyword is required to search in advertises
-      - name: limit
-        in: query
-        schema:
-          type: integer
-        description: Limit is for Pagination
-      - name: page
-        in: query
-        schema:
-          type: integer
-        description: page is for Pagination
       - name: minPrice
         in: query
         required: false
@@ -584,7 +574,7 @@ paths:
             schema:
              $ref: '#/components/schemas/400response'
 
-  /ads/{categoryName}/{keyword}:
+  /ads/categories/{categoryName}/:
     get:
       tags:
       - "advertises"
@@ -594,24 +584,14 @@ paths:
         in: path
         required: true
         schema:
-          type: integer
+          type: string
         description: category is required to search in advertises
-      - name: keyword
-        in: path
+      - name: term
+        in: query
         required: true
         schema:
-          type: integer
+          type: string
         description: keyword is required to search in advertises
-      - name: limit
-        in: query
-        schema:
-          type: integer
-        description: Limit is for Pagination
-      - name: page
-        in: query
-        schema:
-          type: integer
-        description: page is for Pagination
       - name: minPrice
         in: query
         required: false
