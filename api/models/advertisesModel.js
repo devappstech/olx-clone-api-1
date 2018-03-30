@@ -224,7 +224,7 @@ exports.singleAd = (advertiseID) => {
   all category
 ---------------------------------------------------------
 */
-exports.searchResult = (limit, offset, searchKeyword, minPrice, maxPrice) => {
+exports.searchResult = (searchKeyword, minPrice, maxPrice) => {
   const QuerySearchResult = database.queryBuilder
   .select()
   .from('advertises')
@@ -248,21 +248,19 @@ exports.searchResult = (limit, offset, searchKeyword, minPrice, maxPrice) => {
   .join('states', null, 'cities.city_state_id = states.state_id')
   .join('categories', null, 'categories.category_id = advertises.advertise_category_id')
   .join('images', null, 'images.image_advertise_id = advertises.advertise_id')
-  .where(database.queryBuilder.expr()
-    .and('advertise_title ilike ?', '%' + searchKeyword + '%')
-    .or('advertise_description ilike ?', '%' + searchKeyword + '%'))
   .where('advertise_price >= ?', minPrice)
   .where('advertise_price <= ?', maxPrice)
   .where('advertise_stage = ?', 'published')
   .where('advertise_sold = ?', false)
+  .where(database.queryBuilder.expr()
+    .and('advertise_title ilike ?', '%' + searchKeyword + '%')
+    .or('advertise_description ilike ?', '%' + searchKeyword + '%'))
   .group('advertises.advertise_id')
   .group('cities.city_id')
   .group('states.state_id')
   .group('categories.category_id')
   .group('users.user_id')
   .order('advertise_timestamp', false)
-  .limit(limit)
-  .offset(offset)
   .toParam();
 
   return database.executeQuery(QuerySearchResult);
@@ -274,9 +272,9 @@ exports.searchResult = (limit, offset, searchKeyword, minPrice, maxPrice) => {
   advertises in all specific category
 ---------------------------------------------------------
 */
-exports.categorySearchResult = (limit, offset, categoryName, searchKeyword, minPrice, maxPrice) => {
+exports.categorySearchResult = (categoryName, searchKeyword, minPrice, maxPrice) => {
 
-  const QuerySearchResult = database.queryBuilder
+  let QuerySearchResult = database.queryBuilder
   .select()
   .from('advertises')
   .field('advertises.advertise_id')
@@ -299,25 +297,43 @@ exports.categorySearchResult = (limit, offset, categoryName, searchKeyword, minP
   .join('states', null, 'cities.city_state_id = states.state_id')
   .join('categories', null, 'categories.category_id = advertises.advertise_category_id')
   .join('images', null, 'images.image_advertise_id = advertises.advertise_id')
-  .where(database.queryBuilder.expr()
-    .and('advertise_title ilike ?', '%' + searchKeyword + '%')
-    .or('advertise_description ilike ?', '%' + searchKeyword + '%'))
   .where('advertise_price >= ?', minPrice)
   .where('advertise_price <= ?', maxPrice)
   .where('advertise_stage = ?', 'published')
   .where('advertise_sold = ?', false)
   .where('categories.category_name = ?', categoryName)
-  .group('advertises.advertise_id')
-  .group('cities.city_id')
-  .group('states.state_id')
-  .group('categories.category_id')
-  .group('users.user_id')
-  .order('advertise_timestamp', false)
-  .limit(limit)
-  .offset(offset)
-  .toParam();
 
-  return database.executeQuery(QuerySearchResult);
+
+  if (!searchKeyword) {
+    QuerySearchResult = QuerySearchResult
+    .group('advertises.advertise_id')
+    .group('cities.city_id')
+    .group('states.state_id')
+    .group('categories.category_id')
+    .group('users.user_id')
+    .order('advertise_timestamp', false)
+    .toParam();
+
+    return database.executeQuery(QuerySearchResult);
+
+  } else {
+
+    QuerySearchResult = QuerySearchResult
+    .where(database.queryBuilder.expr()
+      .and('advertise_title ilike ?', '%' + searchKeyword + '%')
+      .or('advertise_description ilike ?', '%' + searchKeyword + '%'))
+    .group('advertises.advertise_id')
+    .group('cities.city_id')
+    .group('states.state_id')
+    .group('categories.category_id')
+    .group('users.user_id')
+    .order('advertise_timestamp', false)
+    .toParam();
+
+    return database.executeQuery(QuerySearchResult);
+  }
+
+
 }
 
 exports.deleteAdvertise = (id, userId) => {
