@@ -1,0 +1,1446 @@
+openapi: 3.0.0
+servers:
+  - url: 'http://localhost:3000/api'
+info:
+  version: 1.0.0
+  title: OlxClone API
+  description: >-
+    Olx Clone is demo projet for learning backend, it is classification site
+    api.
+  termsOfService: terms
+  contact:
+    name: akash
+    url: 'http://imrprowised.com'
+    email: akash@improwised.com
+  license:
+    name: MIT
+    url: 'http://opensource.org/licenses/MIT'
+security:
+  - cookieAuth: []
+  # currently not supported:
+  # Reference: https://stackoverflow.com/questions/49272171/sending-cookie-session-id-with-swagger-3-0
+
+# Tags name Define here
+tags:
+- name: "advertises"
+  description: "everything about advertises"
+- name: "users"
+  description: "everything about users"
+- name: "states"
+  description: "everything about states"
+- name: "categories"
+  description: "everything about categories"
+
+# PATHS Start from here
+
+paths:
+
+# State Path -----------------------------------
+  /states:
+    get:
+      tags:
+      - "states"
+      summary: gets states data from database
+      description: this is used to get all state data along.
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+
+  /states/{id}:
+    get:
+      tags:
+      - "states"
+      summary: Returns a state details by ID.
+      parameters:
+        - name: id
+          in: path
+          description: ID of state need to fetch
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /states/{id}/cities:
+    get:
+      tags:
+      - "states"
+      description: fetch all citits of given state's id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+# Categories Path -----------------------------------
+  /categories:
+    get:
+      tags:
+      - "categories"
+      summary: fetch list of categories available in system
+      description: it fetches categories list from database and send it to user
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+
+  /categories/{categoryId}:
+    get:
+      tags:
+      - "categories"
+      description: "get category by id"
+      parameters:
+        - name: categoryId
+          in: path
+          description: ID of category need to fetch
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+# Advertises Path --------------------------------
+  /ads:
+    get:
+      tags:
+      - "advertises"
+      description: "fetch all advertises in descending order of time and date"
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+        description: page For Pagination
+      - name: limit
+        in: query
+        schema:
+          type: integer
+        description: limit For Pagination
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/getMultipleAdvertiseData'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+    post:
+      tags:
+      - "advertises"
+      description: Create a Free Advertise
+      requestBody:
+        content:
+         application/json:
+          schema:
+            $ref: '#/components/schemas/advertises'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/{id}/upload:
+    post:
+      tags:
+      - "advertises"
+      description: upload images of advertise by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: id of advertise
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                photos:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/{id}/publish:
+    put:
+      tags:
+      - "advertises"
+      description: pubish advertise by ID if it has uploaded images
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: id of advertise
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/{id}:
+    get:
+      tags:
+      - "advertises"
+      description: "get single advertise information"
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: id of advertise needed to fetch information
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/getSingleAdvertiseData'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+    delete:
+      tags:
+      - "advertises"
+      description: Delete advertise by id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/{id}/sold:
+    put:
+      tags:
+      - "advertises"
+      description: set advertise as sold/selling
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/advertise_sold'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/{id}/sell:
+    put:
+      tags:
+      - "advertises"
+      description: set advertise as back in stock/countinue selling Or selling again
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/advertise_sold'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/search/results/{term}:
+    get:
+      tags:
+      - "advertises"
+      description: it is used for search and filter
+      parameters:
+      - name: term
+        in: path
+        required: true
+        schema:
+          type: string
+        description: this keyword is required to search in advertises
+      - name: minPrice
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Minumum Price for ranging between prices
+      - name: maxPrice
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Maximum Price for ranging between prices
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/getMultipleAdvertiseData'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /ads/categories/{categoryName}/:
+    get:
+      tags:
+      - "advertises"
+      description: it will search advertises in database within categoryId and send result
+      parameters:
+      - name: categoryName
+        in: path
+        required: true
+        schema:
+          type: string
+        description: category is required to search in advertises
+      - name: term
+        in: query
+        required: true
+        schema:
+          type: string
+        description: keyword is required to search in advertises
+      - name: minPrice
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Minumum Price for ranging between prices
+      - name: maxPrice
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Maximum Price for ranging between prices
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/getMultipleAdvertiseData'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+# Users Path ---------------------------------------
+
+  /users/status/email:
+    post:
+      tags:
+      - "users"
+      description: check for email availbility
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestEmailStatus'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/EmailStatus'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/EmailStatus'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /users/register:
+    post:
+      tags:
+      - "users"
+      description: register new local user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userRegistration'
+      responses:
+        '201':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /users/login:
+    post:
+      tags:
+      - "users"
+      description: login exisiting local user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userLogin'
+      security: []    # no authentication
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/200LoginResponse'
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: connect.sid=abcde12345; Path=/; HttpOnly
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /users/profile/{id}:
+    get:
+      tags:
+      - "users"
+      description: fetch user information
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: id of user
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /users/profile:
+    get:
+      tags:
+      - "users"
+      description: fetch user information
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+        '403':
+          description: Unauthorized
+
+  /users/ads/{id}:
+    get:
+      tags:
+      - "users"
+      description: fetch advertises created by user
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: id of user
+        schema:
+          type: integer
+      - name: page
+        in: query
+        description: page number
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: limit of records on one page
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/getMultipleAdvertiseData'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /users/ads:
+    get:
+      tags:
+      - "users"
+      description: fetch advertises created by user
+      parameters:
+        - name: page
+          in: query
+          description: page number
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: limit of records on one page
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/getMultipleAdvertiseData'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+        '403':
+          description: Unauthorized
+
+  /users/logout:
+    get:
+      tags:
+      - "users"
+      description: end user session and logouts from system
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/200LogoutResponse'
+
+  /users/edit:
+    put:
+      tags:
+      - "users"
+      description: fetch user information
+      parameters:
+       - name: id
+         in: path
+         required: true
+         description: id of user
+         schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userProfile'
+      responses:
+        '201':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+        '403':
+          description: Unauthorized
+
+  /users/auth/status:
+    get:
+      tags:
+      - "users"
+      description: Send Data Of loggedin local user
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/200LoginResponse'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+        '403':
+          description: Unauthorized
+
+  /users/password/update:
+    put:
+      tags:
+      - "users"
+      description: modify local user's password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePassword'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+        '403':
+          description: Unauthorized
+
+  /users/password/forget:
+    post:
+      tags:
+      - "users"
+      description: send email to user for link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestEmailStatus'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/EmailStatus'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+  /users/password/reset/{token}:
+    get:
+      tags:
+      - "users"
+      description: validate user password reset token
+      parameters:
+       - name: token
+         in: path
+         required: true
+         description: token of user
+         schema:
+          type: string
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/200tokenResponse'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+    post:
+      tags:
+      - "users"
+      description: validate user password reset token
+      parameters:
+       - name: token
+         in: path
+         required: true
+         description: token of user
+         schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePassword'
+      responses:
+        '200':
+          description: OK!
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/201-200response'
+        '404':
+          description: Not Found
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/404response'
+        '500':
+          description: Internal Error
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/500response'
+        '400':
+          description: Bad Request
+          content:
+           application/json:
+            schema:
+             $ref: '#/components/schemas/400response'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: connect.sid  # cookie name
+  schemas:
+    state:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    categories:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+
+    advertise_sold:
+      required:
+        - sold
+      properties:
+        sold:
+          type: boolean
+
+    userRegistration:
+      required:
+        - username
+        - email
+        - phoneNumber
+        - password
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: number
+        password:
+          type: string
+
+    userProfile:
+      required:
+        - username
+        - email
+        - phoneNumber
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: number
+
+    userLogin:
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    advertises:
+      required:
+        - userId
+        - title
+        - description
+        - price
+        - condition
+        - categoryId
+        - lat
+        - long
+        - cityId
+      properties:
+        userId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        condition:
+          type: string
+        categoryId:
+          type: integer
+        lattitude:
+          type: number
+        longitude:
+          type: number
+        cityId:
+          type: integer
+
+    201-200response:
+      required:
+        - message
+        - data
+      properties:
+        message:
+          type: string
+        data:
+          type: array
+
+    200LoginResponse:
+      required:
+        - message
+        - Auth
+        - data
+      properties:
+        message:
+          type: string
+        Auth:
+          type: boolean
+        data:
+          type: array
+
+    200tokenResponse:
+      required:
+        - message
+        - validToken
+      properties:
+        message:
+          type: string
+        validToken:
+          type: boolean
+
+    200LogoutResponse:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+    404response:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+    UpdatePassword:
+      required:
+        - password
+      properties:
+        password:
+          type: string
+
+    400response:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+    500response:
+      required:
+        - message
+        - Stack
+      properties:
+        message:
+          type: string
+        Stack:
+          type: array
+
+    EmailStatus:
+      required:
+        - message
+        - status
+      properties:
+        message:
+          type: string
+        status:
+          type: string
+
+    RequestEmailStatus:
+      required:
+        - email
+      properties:
+        email:
+          type: string
+
+    getMultipleAdvertiseData:
+      required:
+       - message
+       - metadata
+       - data
+      properties:
+        message:
+          type: string
+        metadata:
+          type: array
+          items:
+            type: object
+            properties:
+              currentPage:
+                type: integer
+              limit:
+                type: integer
+              displaing:
+                type: integer
+              total:
+                type: integer
+              last_page:
+                type: integer
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              advertise_id:
+                type: integer
+              advertise_title:
+                type: string
+              advertise_description:
+                type: string
+              advertise_price:
+                type: number
+              advertise_condition:
+                type: string
+              advertise_timestamp:
+                type: string
+              city_name:
+                type: string
+              state_name:
+                type: string
+              images:
+                type: array
+                items:
+                  type: string
+              category_name:
+                type: string
+              user_name:
+                type: string
+              user_phone:
+                type: number
+              user_id:
+                type: integer
+              user_email:
+                type: string
+              advertise_sold:
+                type: boolean
+
+    getSingleAdvertiseData:
+      required:
+       - message
+       - data
+      properties:
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              advertise_id:
+                type: integer
+              advertise_title:
+                type: string
+              advertise_description:
+                type: string
+              advertise_price:
+                type: number
+              advertise_condition:
+                type: string
+              advertise_timestamp:
+                type: string
+              city_name:
+                type: string
+              state_name:
+                type: string
+              images:
+                type: array
+                items:
+                  type: string
+              category_name:
+                type: string
+              user_name:
+                type: string
+              user_phone:
+                type: number
+              user_id:
+                type: integer
+              user_email:
+                type: string
+              advertise_sold:
+                type: boolean

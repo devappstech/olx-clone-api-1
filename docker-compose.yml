@@ -1,0 +1,56 @@
+version: '2'
+services:
+
+  postgres:
+     image: postgres:9.5
+     restart: unless-stopped
+     environment:
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: 123456
+     ports:
+       - $PGPORT:$PGPORT
+     volumes:
+       - ./postgres_data:/var/lib/postgresql/data
+       - ./dump:/docker-entrypoint-initdb.d%
+
+  app:
+    build:
+      context: .
+    restart: unless-stopped
+    environment:
+      NODE_ENV: $NODE_ENV
+      PGHOST: $PGHOST
+      PG_TEST_DB: $PG_TEST_DB
+      PGUSER: $PGUSER
+      PGPASSWORD: $PGPASSWORD
+      sessionSecert: $sessionSecert
+      BASE_URL: $BASE_URL
+      emailUser: $emailUser
+      emailPassword: $emailPassword
+    ports:
+      - $PORT:$PORT
+    links:
+      - postgres
+
+  react:
+    build:
+      context: ../olx-design
+    restart: unless-stopped
+    environment:
+      PORT: $REACT_PORT
+      NODE_ENV: $NODE_ENV
+      API_URL: $API_URL
+    ports:
+      - "$REACT_PORT:$REACT_PORT"
+
+  nginx:
+    build:
+      context: ./nginx/
+    image: nginx
+    restart: always
+    build: ./nginx/
+    ports:
+      - "80:80"
+    links:
+      - app
+      - react
